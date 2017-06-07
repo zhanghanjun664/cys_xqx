@@ -1,0 +1,72 @@
+/* pages/record/addRecord/addRecord.wxss */
+.ar_topBox{
+  border-bottom: 1px solid #ececec;
+  line-height: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/*.ar_topBox image{
+  margin: 0 20rpx 0 6rpx;
+}*/
+.ar_icon_gt{
+  margin-left: 6rpx;
+}
+.ar_topBox_l image{
+  margin:0 20rpx 0 10rpx;
+}
+.ar_topBox_r,.ar_topBox_l{
+  display: flex;
+  align-items: center;
+}
+
+
+/*游标*/
+.canvas-cursor {
+	width: 4px;
+  position: absolute;
+  background-color: #fa9926;
+  top: -5px;
+  left:0;
+  right:0;
+  margin: 0 auto;
+	border-radius: 4px;
+}
+canvas{
+  background-color: #f8f8f8;
+}
+.sv_box{
+  width: 90%;
+  margin: 0 auto;
+}
+.ar_midBox{
+  position: relative;
+  
+}
+.ar_midTitleBox{
+  line-height: 2;
+}
+.ar_midTitle{
+  position: absolute;
+  left: 5%;
+  top: 14px;
+  font-size: 28rpx;
+}
+.ar_midTitleValue{
+  color: #fd9627;
+  text-align: center;
+  font-size: 60rpx;
+}
+.ar_canvasBox{
+  margin:0 auto;
+  border: 1px solid #ececec;
+}
+.ar_midTitleSwitch{
+  position: absolute;
+  right: 5%;
+  top: 14px;
+}
+.ar_midTitleSwitch text{
+  font-size: 28rpx;
+  margin-right: 10rpx;
+}

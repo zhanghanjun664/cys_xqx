@@ -1,0 +1,127 @@
+<!--pages/record/record.wxml-->
+<view class="recordBox">
+  <button open-type="share" class="share_btn">
+    <image src="../../other/img/icon_other_share.png" class="standard_img"></image> 邀请好友加入，与好友一起去测血压！</button>
+
+  <!--没有数据时显示-->
+  <!--<view class="text-center" style="padding-top:120rpx;"><image src="../../other/img/icon_status_none.png" style="width:470rpx" mode="aspectFit"></image></view>-->
+
+  <scroll-view scroll-y class="rc_dataBox">
+    <view class="">
+
+      <!--当天的记录-->
+      <view class="rc_dateDayBox">
+        <view class="rc_dataTitle">2017年5月1日</view>
+        <view class="rc_dataCont clearfix">
+          <view class="rc_dataContItem">
+            <view class="rc_dataContItem_time">08:00</view>
+            <view class="rc_dataContItem_hg">
+              <view class="">125/85</view>
+              <view class="rc_dataContItem_hg_unit">mmHg</view>
+            </view>
+            <view class="rc_dataContItem_heart">
+              <view class="">85</view>
+              <view class="rc_dataContItem_hg_unit">bmp</view>
+            </view>
+            <view class="rc_dataContItem_dsc">
+              <view class="">指正常2级</view>
+              <view class="">正常心率</view>
+            </view>
+            <view class="rc_dataContItem_icon">
+              <image src="../../other/img/icon_other_more.png" class="standard_img" mode="aspectFit" style="vertical-align:middle" ></image>
+            </view>
+            
+          </view>
+          
+          <view class="rc_dataContItem">
+            <view class="rc_dataContItem_time">09:00</view>
+            <view class="rc_dataContItem_hg">
+              <view class="">125/85</view>
+              <view class="rc_dataContItem_hg_unit">mmHg</view>
+            </view>
+            <view class="rc_dataContItem_heart">
+              <view class="">85</view>
+              <view class="rc_dataContItem_hg_unit">bmp</view>
+            </view>
+            <view class="rc_dataContItem_dsc">指标正常</view>
+            <view class="rc_dataContItem_icon">></view>
+          </view>
+
+          <view class="rc_dataContItem">
+            <view class="rc_dataContItem_time">08:00</view>
+            <view class="rc_dataContItem_hg">
+              <view class="">125/85</view>
+              <view class="rc_dataContItem_hg_unit">mmHg</view>
+            </view>
+            <view class="rc_dataContItem_heart">
+              <view class="">85</view>
+              <view class="rc_dataContItem_hg_unit">bmp</view>
+            </view>
+            <view class="rc_dataContItem_dsc">指标正常</view>
+            <view class="rc_dataContItem_icon">></view>
+          </view>
+
+        </view>
+      </view>
+
+      <view class="rc_dateDayBox">
+        <view class="rc_dataTitle">2017年5月1日</view>
+        <view class="rc_dataCont clearfix">
+          <view class="rc_dataContItem">
+            <view class="rc_dataContItem_time">08:00</view>
+            <view class="rc_dataContItem_hg">
+              <view class="">125/85</view>
+              <view class="rc_dataContItem_hg_unit">mmHg</view>
+            </view>
+            <view class="rc_dataContItem_heart">
+              <view class="">85</view>
+              <view class="rc_dataContItem_hg_unit">bmp</view>
+            </view>
+            <view class="rc_dataContItem_dsc">指标正常</view>
+            <view class="rc_dataContItem_icon">></view>
+          </view>
+
+        </view>
+      </view>
+
+      <view class="rc_dateDayBox">
+        <view class="rc_dataTitle">2017年5月1日</view>
+        <view class="rc_dataCont clearfix">
+          <view class="rc_dataContItem">
+            <view class="rc_dataContItem_time">08:00</view>
+            <view class="rc_dataContItem_hg">
+              <view class="">125/85</view>
+              <view class="rc_dataContItem_hg_unit">mmHg</view>
+            </view>
+            <view class="rc_dataContItem_heart">
+              <view class="">85</view>
+              <view class="rc_dataContItem_hg_unit">bmp</view>
+            </view>
+            <view class="rc_dataContItem_dsc">指标正常</view>
+            <view class="rc_dataContItem_icon">></view>
+          </view>
+
+          <view class="rc_dataContItem">
+            <view class="rc_dataContItem_time">08:00</view>
+            <view class="rc_dataContItem_hg">
+              <view class="">125/85</view>
+              <view class="rc_dataContItem_hg_unit">mmHg</view>
+            </view>
+            <view class="rc_dataContItem_heart">
+              <view class="">85</view>
+              <view class="rc_dataContItem_hg_unit">bmp</view>
+            </view>
+            <view class="rc_dataContItem_dsc">指标正常</view>
+            <view class="rc_dataContItem_icon">></view>
+          </view>
+
+        </view>
+      </view>
+
+    </view>
+  </scroll-view>
+
+
+  <button type="cys_orange" bindtap="openAddRecord" class="btn_addRecord">记录血压/心率</button>
+  <!--<view class="text-center">当前name是:{{name}}</view>-->
+</view>

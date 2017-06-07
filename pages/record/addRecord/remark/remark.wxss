@@ -1,0 +1,28 @@
+/* pages/record/addRecord/remark/remark.wxss */
+.rm_text{
+  border-top: 1px solid #ececec;
+  border-bottom: 1px solid #ececec;
+  width: 100%;
+  margin-bottom:20px;
+}
+
+.rm_moodBox{
+  margin-top: 14px;
+}
+.rm_moodBox view{
+  float: left;
+  width: 28%;
+  margin: 0 2% 10px;
+  background-color:#f8f8f8;
+  text-align: center; 
+  line-height: 40px;
+  height: 40px;
+  color: #ababab;
+  border: 1px solid #ececec;
+  font-size: 30rpx;
+}
+.rm_moodBox .active{
+  color: #fff;
+  background-color: #fd9627;
+  border-style: #fd9627;
+}

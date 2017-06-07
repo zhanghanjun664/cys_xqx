@@ -1,0 +1,86 @@
+<!--pages/record/addRecord/addRecord.wxml-->
+<view class="">
+  <view class="width90">
+    <view class="ar_topBox">
+      <view class="ar_topBox_l">
+        <image src="../../../other/img/icon_set_about.png" class="standard_img"></image>
+        <text>测量时间</text>
+      </view>
+
+      <view class="ar_topBox_r">
+        <picker mode="date" value="{{date}}" start="2000-1-1" end="{{nowDate}}" bindchange="changeDate" class="" style="margin-right:20rpx;">{{showDate}}</picker>
+        <picker mode="time" value="{{time}}" end="{{nowTime}}" bindchange="changeTime" class="">{{time?time:nowTime}}</picker>
+        <image src="../../../other/img/icon_other_more.png" class="ar_icon_gt icon_gt" mode="aspectFit"></image>
+      </view>
+      
+    </view>
+    <view class="ar_topBox">
+
+      <view class="ar_topBox_l">
+        <image src="../../../other/img/icon_set_mark.png" class="standard_img"></image>
+        <text>备注</text>
+      </view>
+
+      <view class="ar_topBox_r" bindtap="goRemark">
+        <text class="pull-right">暂无备注</text>  
+        <image src="../../../other/img/icon_other_more.png" class="ar_icon_gt icon_gt" mode="aspectFit"></image>
+      </view>
+
+    </view>
+  </view>
+
+  <view class="1.2">
+    <view class="ar_midBox">
+      <view class="ar_midTitleBox">
+        <text class="ar_midTitle">收缩压（高压）mmHg</text>
+        <view class="ar_midTitleValue">{{highValue}}</view>
+      </view>
+      <view style="position:relative;">
+        <scroll-view scroll-x="true" bindscroll="high_scroll" scroll-left="{{high_scrollLeft}}" style="width:{{canvasWB}}" class="ar_canvasBox">
+          <canvas canvas-id="canvas-ruler1" style="height: {{canvasHeight}}px; width:{{canvasWidth}}px;min-width:2300px;"></canvas>
+        </scroll-view>
+        <view class="canvas-cursor" style="height:{{canvasHeight+10}}px"></view>
+      </view>
+    </view>
+
+    <view class="ar_midBox">
+      <view class="ar_midTitleBox">
+        <text class="ar_midTitle">舒张压（低压）mmHg</text>
+        <view class="ar_midTitleValue">{{lowValue}}</view>
+      </view>
+      <view style="position:relative;">
+        <scroll-view scroll-x="true" bindscroll="low_scroll" scroll-left="{{low_scrollLeft}}" style="width:{{canvasWB}}" class="ar_canvasBox">
+          <canvas canvas-id="canvas-ruler2" style="height: {{canvasHeight}}px; width: {{canvasWidth}}px;min-width:2300px;"></canvas>
+        </scroll-view>
+        <view class="canvas-cursor" style="height:{{canvasHeight+10}}px"></view>
+      </view>
+    </view>
+    
+    <view class="ar_midBox">
+      <view class="ar_midTitleBox">
+        <text class="ar_midTitle">心率范围bmp</text>
+        <view class="ar_midTitleValue">{{heartValue}}</view>
+        <view class="ar_midTitleSwitch">
+          <text>是否记录</text>
+          <switch type="switch" color="#fd9627" bindchange="handleSwitch"/>
+        </view>
+      </view>
+      <view style="position:relative;">
+        <scroll-view scroll-x="true" bindscroll="heart_scroll" scroll-left="{{heart_scrollLeft}}" style="width:{{canvasWB}}" class="ar_canvasBox">
+          <canvas canvas-id="canvas-ruler3" style="height: {{canvasHeight}}px; width: {{canvasWidth}}px;min-width:2300px;"></canvas>
+        </scroll-view>
+        <view class="canvas-cursor" style="height:{{canvasHeight+10}}px"></view>
+      </view>
+    </view>
+
+  </view>
+
+
+  <view class="1.3">
+    <button type="cys_orange" class="btn_addRecord" bindtap="handleConfirm">记录血压/心率</button>
+  </view>
+</view>
+
+
+<!--<button type="cys_orange" bindtap="go">备注</button>
+<button type="primary" bindtap="change">修改</button>-->

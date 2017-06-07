@@ -1,0 +1,7 @@
+/* pages/home/changeName/changeName.wxss */
+.cn_inp{
+  width: 88%;
+  margin: 20px auto 30px;
+  border-bottom: 1px solid #ececec;
+  padding-bottom: 8px;
+}

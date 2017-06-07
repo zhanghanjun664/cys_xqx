@@ -1,0 +1,7 @@
+<!--pages/home/changeName/changeName.wxml-->
+
+<view class="">
+  <input type="text" class="cn_inp" bindinput="changeName" value="{{name}}" />
+</view>
+
+<button type="cys_orange" bindtap="save">保存</button>

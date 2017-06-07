@@ -1,0 +1,38 @@
+<!--pages/home/home.wxml-->
+
+<view class="">
+  <view class="hm_wximg" bindtap="goAuthorize">
+    <image src="{{info.avatar}}"></image>
+  </view>
+
+  <view class="hm_infoBox">
+    <view class="hm_infoCont" bindtap="changeName">
+      <view class="hm_infoCont_name">姓名</view>
+      <view class="hm_infoCont_dsc">{{info.name}}</view>
+      <view class="hm_infoCont_icon">
+        <image src="../../other/img/icon_other_more.png" class="pull-right icon_gt" mode="aspectFit"></image>
+      </view>
+    </view>
+
+     <view class="hm_infoCont">
+      <view class="hm_infoCont_name">性别</view>
+      <picker class="hm_infoCont_dsc" range="{{genderArr}}" bindchange="changeGender" >{{genderArr[genderIndex]}}</picker>
+      <view class="hm_infoCont_icon">
+        <image src="../../other/img/icon_other_more.png" class="pull-right icon_gt" mode="aspectFit"></image>
+      </view>
+    </view>
+
+     <view class="hm_infoCont">
+      <view class="hm_infoCont_name">年龄</view>
+      <picker class="hm_infoCont_dsc" range="{{ageArr}}" bindchange="changeAge" value="39" > {{ageArr[ageIndex]}}</picker>
+      <view class="hm_infoCont_icon">
+        <image src="../../other/img/icon_other_more.png" class="pull-right icon_gt" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+  
+  <button open-type="contact" class="hm_contact" size="mini">
+    <image src="../../other/img/icon_other_chat.png" class="standard_img"></image>
+    <text>客服</text>
+  </button>
+</view>

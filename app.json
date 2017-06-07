@@ -1,0 +1,39 @@
+{
+  "pages":[
+    "pages/record/record",
+    "pages/home/home",
+    "pages/record/addRecord/addRecord",
+    "pages/home/changeName/changeName",
+    "pages/record/addRecord/remark/remark",
+    "pages/curve/curve"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "血压记录",
+    "navigationBarTextStyle":"black"
+  },
+  "tabBar": {
+    "selectedColor":"#fd9627",
+    "list": [
+      {
+        "pagePath": "pages/record/record",
+        "text": "记录",
+        "iconPath": "other/img/icon_index_a1.png",
+        "selectedIconPath":"other/img/icon_index_a2.png"
+      },
+      {
+        "pagePath": "pages/curve/curve",
+        "text": "曲线",
+        "iconPath": "other/img/icon_index_b1.png",
+        "selectedIconPath": "other/img/icon_index_b2.png"
+      },
+      {
+        "pagePath": "pages/home/home",
+        "text": "我",
+        "iconPath": "other/img/icon_index_c1.png",
+        "selectedIconPath": "other/img/icon_index_c2.png"
+      }
+    ]
+  }
+}

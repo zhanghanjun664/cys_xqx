@@ -1,0 +1,10 @@
+<!--pages/record/addRecord/remark/remark.wxml-->
+<view class="width90">
+  <textarea placeholder="记录今天的心情、天气、用药情况等信息" placeholder-style="color:#bbbbbb;font-size:34rpx" class="rm_text"/>
+  <view class="2">今日心情</view>
+  <view class="rm_moodBox clearfix">
+    <view class="{{selectedMood == index?'active':''}}" wx:for="{{moodBox}}" wx:key="{{index}}" data-index="{{index}}" bindtap="handleClickMood"><icon type="success" color="#fff" size="16" style="margin-right:10rpx;" wx:if="{{selectedMood == index?'active':''}}"/>{{item}}</view>
+  </view>
+  <button type="cys_danger" class="btn_addRecord">保 存</button>
+  <!--<button type="cys_orange" class="btn_addRecord">保 存</button>-->
+</view>
