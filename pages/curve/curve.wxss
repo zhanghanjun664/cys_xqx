@@ -1,1 +1,47 @@
 /* pages/curve/curve.wxss */
+/*.cv_pressureBox > view{
+  float: left;
+}*/
+.cv_pressureBox{
+  display: flex;
+  justify-content: space-between;
+}
+.cv_cv_pressureRight{
+  flex: 1;
+  margin-top: 5px;
+  margin-left: 36rpx;
+}
+.cv_square{
+  width: 26rpx;
+  height: 26rpx;
+  float: left;
+  margin-right: 6rpx;
+}
+.cv_highBox{
+  float: left;
+}
+.cv_lowBox{
+  float: right;
+}
+.cv_highBox .cv_square{
+  background-color: #ff8201;
+}
+.cv_lowBox .cv_square{
+  background-color: #4e8cfd;
+}
+.cv_canvasBox{
+  width: 100%;
+  position: relative;
+}
+.cv_canvasL{
+  /*float: left;*/
+  width: 16%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+}
+.cv_canvasR{
+  float: right;
+  width: 84%;
+}

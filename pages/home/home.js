@@ -132,5 +132,12 @@ Page({
         genderIndex: (that.data.genderIndex ? that.data.genderIndex : data.gender-1)
       })
     })
+  },
+  login:function(){
+    wx.login({
+      success:function(code){
+        console.log(code)
+      }
+    })
   }
 })

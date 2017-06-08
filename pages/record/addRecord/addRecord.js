@@ -252,7 +252,7 @@ Page({
     }
     console.log(data);
     wx.request({
-      url: common.REST_PREFIX + '/genericapi/private/healthcenter/healthdata/bloodpressure',
+      url: common.REST_PREFIX + '/genericapi/public/healthcenter/healthdata/bloodpressure',
       data: JSON.stringify(data),
       method:"POST",
       success:function(res){

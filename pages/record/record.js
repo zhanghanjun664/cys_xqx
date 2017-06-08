@@ -1,5 +1,7 @@
 // pages/record/record.js
+console.log(common);
 var app = getApp();
+var common = app.globalData;
 Page({
 
   /**
@@ -22,7 +24,18 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(options)
+    console.log(options);
+    // var data = {
+    //   date_from:"2017-5-23 19:35:00",
+    //   date_to:"2017-5-26 19:35:00"
+    // }
+    // wx.request({
+    //   url: common.REST_PREFIX + '/genericapi/public/healthcenter/healthdata/bloodpressure',
+    //   data: JSON.stringify(data),
+    //   success: function (res) {
+    //     console.log(res);
+    //   }
+    // })
   },
 
   /**

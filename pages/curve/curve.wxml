@@ -1,2 +1,23 @@
 <!--pages/curve/curve.wxml-->
-<text>pages/curve/curve.wxml</text>
+<view class="">
+  <view class="cv_pressureBox clearfix">
+    <view style="font-size:36rpx">血压曲线图(mmHg)</view>
+    <view class="cv_cv_pressureRight">
+      <view class="cv_highBox">
+        <view class="cv_square"></view>
+        <view class="font26 pull-left">收缩压(高压)</view>
+      </view>
+      <view class="cv_lowBox">
+        <view class="cv_square"></view>
+        <view class="font26 pull-left">舒张压(低压)</view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="cv_canvasBox clearfix">
+    <scroll-view scroll-x="true" scroll-left="{{canvasL}}" bindscroll="handleScroll" class="cv_canvasR" bindscrolltoupper="getData" >
+      <canvas canvas-id="firstCanvas" class="canvas2" style="width:{{canvasW}}px;height:{{canvasH}}px" />
+    </scroll-view>
+    <canvas canvas-id="canvasY" class="cv_canvasL" style="height:{{canvasH}}px"/>
+  </view>
+</view>
