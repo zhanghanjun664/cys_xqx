@@ -15,9 +15,13 @@
   </view>
   
   <view class="cv_canvasBox clearfix">
-    <scroll-view scroll-x="true" scroll-left="{{canvasL}}" bindscroll="handleScroll" class="cv_canvasR" bindscrolltoupper="getData" >
-      <canvas canvas-id="firstCanvas" class="canvas2" style="width:{{canvasW}}px;height:{{canvasH}}px" />
+    <scroll-view scroll-x="true" scroll-left="{{setCanvasL}}" bindscroll="handleScroll" class="cv_canvasR" bindscrolltoupper="getData" >
+      <canvas canvas-id="firstCanvas" class="canvas2" style="width:{{canvasW}}px;height:{{canvasH}}px" bindtap="clickCanvas" />
     </scroll-view>
+    <view class="showMsgBox" style="top:{{showMsgTop}}px;left:{{showMsgLeft}}px;" wx:if="{{showMswBox}}" >
+      <canvas canvas-id="showMsg" class="showMsg" />
+      <canvas canvas-id="showMsg_icon" class="showMsg_icon" />
+    </view>
     <canvas canvas-id="canvasY" class="cv_canvasL" style="height:{{canvasH}}px"/>
   </view>
 </view>

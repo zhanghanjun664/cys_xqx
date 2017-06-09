@@ -15,7 +15,11 @@ Page({
   data: {
     canvasW: 750,
     canvasH: 250,
-    canvasL: 0
+    setCanvasL:0,
+    canvasL: 0,
+    showMsgLeft:0,
+    showMsgTop:0,
+    showMswBox:false
   },
 
   /**
@@ -25,6 +29,7 @@ Page({
     var that = this;
     utils.drawCanvas({
       id: "firstCanvas",
+      id2: "canvasY",
       box: [
         { x: 30, y: 22 },
         { x: 60, y: 98 },
@@ -44,40 +49,48 @@ Page({
         { x: -10, y: 180 },
       ],
       lineWidth: 2,
-      strokeStyle: "red",
+      color: "#ff8201",
       r: 4,
-      fillStyle: "blue",
+      color2: "#4e8cfd",
       canvasW: that.data.canvasW,
-      canvasH: that.data.canvasH
+      canvasH: that.data.canvasH,
+      screenW: appSystem.screenWidth
+    })
+    utils.drawModal({
+      id: "showMsg",
+      value: "08:00 128/106"
     })
 
-    var ctx = wx.createCanvasContext("canvasY");
-    ctx.beginPath();
-    ctx.setFillStyle("white");
-    ctx.fillRect(0, 0, 200, that.data.canvasH-50 );
-    ctx.fill();
-    ctx.setStrokeStyle("#c4c4c4");
-    ctx.moveTo(0,that.data.canvasH-50);
-    ctx.lineTo(100, that.data.canvasH - 50);
-    ctx.stroke();
+    // var ctx2 = wx.createCanvasContext("canvasY");
+    // ctx2.beginPath();
+    // // 背景涂白
+    // ctx2.setFillStyle("white");
+    // ctx2.fillRect(0, 0, 200, that.data.canvasH-50 );
+    // ctx2.fill();
+    // // x延长线
+    // ctx2.setStrokeStyle("#c4c4c4");
+    // ctx2.moveTo(0,that.data.canvasH-50);
+    // ctx2.lineTo(100, that.data.canvasH - 50);
+    // ctx2.stroke();
 
-    var lengthY = Math.ceil(this.data.canvasH / 40 );
-    console.log(lengthY)
-    ctx.setFontSize(14);
-    ctx.setFillStyle("#999999");
-    for(var i=1;i<lengthY;i++){
-      console.log(that.data.canvasH - 50 - i * 40 );
-      ctx.fillText(40 * i, 20, that.data.canvasH - 50 - i * 40  );
-    }
-    ctx.fill();
+    // // 文字
+    // var lengthY = Math.ceil(this.data.canvasH / 40 );
+    // console.log(lengthY)
+    // ctx2.setFontSize(14);
+    // ctx2.setFillStyle("#999999");
+    // for(var i=1;i<lengthY;i++){
+    //   ctx2.fillText(40 * i, 20, that.data.canvasH - 50 - i * 40  );
+    // }
+    // ctx2.fill();
 
-    ctx.beginPath();
-    ctx.moveTo(appSystem.screenWidth*0.16-1,0);
-    ctx.lineTo(appSystem.screenWidth*0.16-1, that.data.canvasH - 50);
-    ctx.stroke();    
+    // // y轴
+    // ctx2.beginPath();
+    // ctx2.moveTo(appSystem.screenWidth*0.12-1,0);
+    // ctx2.lineTo(appSystem.screenWidth*0.12-1, that.data.canvasH - 50);
+    // ctx2.stroke();    
 
 
-    ctx.draw();
+    // ctx2.draw();
 
   },
 
@@ -131,9 +144,26 @@ Page({
   },
   handleScroll: function (e) {
     console.log(e);
-    this.setData({})
+    this.setData({
+      canvasL: e.detail.scrollLeft
+    })
   },
   getData:function(){
     console.log("拉数据");
+  },
+  clickCanvas:function(e){
+    var targetX = e.detail.x - 45 + this.data.canvasL;
+    var num = Math.round((targetX - 20) / 40 + 1);
+    console.log(num);
+    // 20-50+45=15 第一个点离Y轴距离，自身宽度一半，距离父级距离
+    var left = (num - 1) * 40 - 30 + appSystem.screenWidth*0.12 - this.data.canvasL;
+    var top = e.detail.y - 25;
+    console.log(left,top)
+    this.setData({
+      showMswBox:true,
+      showMsgLeft:left,
+      showMsgTop:top
+    })
+
   }
 })

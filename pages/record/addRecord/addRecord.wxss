@@ -70,3 +70,11 @@ canvas{
   font-size: 28rpx;
   margin-right: 10rpx;
 }
+
+.ar_remark{
+  font-size: 28rpx;
+  max-width: 10em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

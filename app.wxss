@@ -10,6 +10,9 @@
 } 
 
 /*全局样式*/
+.font32{
+  font-size: 32rpx;
+}
 .clearfix::after{
   display: block;
   content: "";

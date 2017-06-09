@@ -1,4 +1,5 @@
 // pages/record/addRecord/remark/remark.js
+var common = getApp().globalData;
 Page({
 
   /**
@@ -13,7 +14,16 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-  
+    var that = this;
+    wx.request({
+      url: common.REST_PREFIX +'/genericapi/public/healthcenter/healthdata/moods',
+      success:function(res){
+        console.log(res);
+        that.setData({
+          moodBox:res.data.result
+        })
+      }
+    })
   },
 
   /**
@@ -65,9 +75,9 @@ Page({
   
   },
   handleClickMood:function(e){
-    console.log(e.target.dataset.index);
+    console.log(e);
     this.setData({
-      selectedMood: e.target.dataset.index
+      selectedMood: e.currentTarget.dataset.index
     })
   }
 })

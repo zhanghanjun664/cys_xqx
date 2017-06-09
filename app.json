@@ -1,11 +1,11 @@
 {
   "pages":[
-    "pages/curve/curve",
-    "pages/record/record",
     "pages/record/addRecord/addRecord",
+    "pages/record/addRecord/remark/remark",
+    "pages/record/record",
+    "pages/curve/curve",
     "pages/home/home",
-    "pages/home/changeName/changeName",
-    "pages/record/addRecord/remark/remark"
+    "pages/home/changeName/changeName"
   ],
   "window":{
     "backgroundTextStyle":"light",
@@ -17,7 +17,7 @@
     "selectedColor":"#fd9627",
     "list": [
       {
-        "pagePath": "pages/curve/curve",
+        "pagePath": "pages/record/addRecord/addRecord",
         "text": "记录",
         "iconPath": "other/img/icon_index_a1.png",
         "selectedIconPath":"other/img/icon_index_a2.png"

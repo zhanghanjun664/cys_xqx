@@ -4,10 +4,10 @@
     <view class="ar_topBox">
       <view class="ar_topBox_l">
         <image src="../../../other/img/icon_set_about.png" class="standard_img"></image>
-        <text>测量时间</text>
+        <text class="font32">测量时间</text>
       </view>
 
-      <view class="ar_topBox_r">
+      <view class="ar_topBox_r font32">
         <picker mode="date" value="{{date}}" start="2000-1-1" end="{{nowDate}}" bindchange="changeDate" class="" style="margin-right:20rpx;">{{showDate}}</picker>
         <picker mode="time" value="{{time}}" end="{{nowTime}}" bindchange="changeTime" class="">{{time?time:nowTime}}</picker>
         <image src="../../../other/img/icon_other_more.png" class="ar_icon_gt icon_gt" mode="aspectFit"></image>
@@ -18,11 +18,14 @@
 
       <view class="ar_topBox_l">
         <image src="../../../other/img/icon_set_mark.png" class="standard_img"></image>
-        <text>备注</text>
+        <text class="font32">备注</text>
       </view>
 
       <view class="ar_topBox_r" bindtap="goRemark">
-        <text class="pull-right">暂无备注</text>  
+          <image src="../../../other/img/mood/pingjing.png" class="standard_img" style="margin-right:16rpx;" ></image>
+          <text class="ar_remark" >暂无备注暂无备注暂无备注</text>
+        <view class="">
+        </view>
         <image src="../../../other/img/icon_other_more.png" class="ar_icon_gt icon_gt" mode="aspectFit"></image>
       </view>
 

@@ -55,7 +55,8 @@ function formatOptions(obj){
 function drawCanvas(config) {
   var ctx = wx.createCanvasContext(config.id);
   var padding = config.padding || 50;
-  var xstandard = 50;
+  var xstandard = 40;
+  var paddingLeft = 20;
   // 排序(根据x从小到大)
   config.box.sort(function (a, b) {
     return a.x - b.x
@@ -85,25 +86,8 @@ function drawCanvas(config) {
   // ctx.fill();
 
 
-  // 画线
-  ctx.beginPath();
-  ctx.moveTo(config.box[0].x , config.canvasH - config.box[0].y - padding);
-  for (var i = 1; i < config.box.length; i++) {
-    ctx.lineTo(config.box[i].x, config.canvasH - config.box[i].y - padding);
-  }
-  ctx.setLineWidth(config.lineWidth);
-  ctx.setStrokeStyle(config.strokeStyle);
-  ctx.stroke();
-  // 描点
-  for (var i = 0; i < config.box.length; i++) {
-    ctx.beginPath();
-    ctx.arc(config.box[i].x , config.canvasH - config.box[i].y - padding, config.r, 0, Math.PI * 2);
-    ctx.setFillStyle(config.fillStyle);
-    ctx.fill();
-  }
   // 清除超出部分
-  // ctx.clearRect(0, 0, padding, config.canvasH);
-  ctx.clearRect(padding, config.canvasH - padding, config.canvasW, padding);
+  // ctx.clearRect(padding, config.canvasH - padding, config.canvasW, padding);
   // 坐标
   ctx.beginPath();
   ctx.moveTo(0, config.canvasH - padding);
@@ -119,9 +103,59 @@ function drawCanvas(config) {
   // ctx.setTextAlign("center");
   ctx.setFillStyle("#acacac");
   for (var i = 0; i < xlength; i++) {
-    ctx.fillText(i, i * xstandard + 20, config.canvasH+20 - padding);
+    ctx.fillText(i, i * xstandard + paddingLeft, config.canvasH+20 - padding);
   }
 
+  // 画线
+  ctx.beginPath();
+  ctx.moveTo(paddingLeft, show("y", config.box[0].y));
+  for (var i = 1; i < config.box.length; i++) {
+    ctx.lineTo(paddingLeft + xstandard * i, show("y", config.box[i].y));
+  }
+  ctx.setLineWidth(config.lineWidth);
+  ctx.setStrokeStyle(config.color);
+  ctx.stroke();
+  // 描点
+  for (var i = 0; i < config.box.length; i++) {
+    ctx.beginPath();
+    ctx.arc(paddingLeft + xstandard * i, show("y", config.box[i].y), config.r, 0, Math.PI * 2);
+    ctx.setFillStyle(config.color);
+    ctx.fill();
+  }
+
+
+  // 左半部分
+  var ctx2 = wx.createCanvasContext(config.id2);
+  ctx2.beginPath();
+  // 背景涂白
+  ctx2.setFillStyle("white");
+  ctx2.fillRect(0, 0, 200, config.canvasH - 50);
+  ctx2.fill();
+  // x延长线
+  ctx2.setStrokeStyle("#c4c4c4");
+  ctx2.moveTo(0, config.canvasH - 50);
+  ctx2.lineTo(100, config.canvasH - 50);
+  ctx2.stroke();
+
+  // 文字
+  var lengthY = Math.ceil(config.canvasH / 40);
+  console.log(lengthY)
+  ctx2.setFontSize(14);
+  ctx2.setFillStyle("#999999");
+  for (var i = 1; i < lengthY; i++) {
+    ctx2.fillText(40 * i, 12, config.canvasH - 50 - i * 40);
+  }
+  ctx2.fill();
+
+  // y轴
+  ctx2.beginPath();
+  ctx2.moveTo(config.screenW * 0.12 - 1, 0);
+  ctx2.lineTo(config.screenW * 0.12 - 1, config.canvasH - 50);
+  ctx2.stroke();
+
+  ctx2.draw();
+
+  
 
  
 
@@ -136,10 +170,34 @@ function drawCanvas(config) {
   }
 
 }
+function drawModal(config){
+  var ctx2 = wx.createCanvasContext(config.icon_id);
+  ctx2.beginPath();
+  ctx2.setFillStyle("white");
+  ctx2.fillRect(0,0,30,30);
+  ctx2.fill();
+  ctx2.setStrokeStyle("#dcdcdc");
+  ctx2.moveTo(0,0);
+  ctx2.lineTo(10,12);
+  ctx2.lineTo(20,0);
+  ctx2.stroke();
+  ctx2.draw();
+
+  var ctx = wx.createCanvasContext(config.id);
+  ctx.setFillStyle("white");
+  ctx.fillRect(0,0,100,30);
+  ctx.fill();
+  ctx.setFillStyle("black");
+  ctx.setFontSize(14);
+  ctx.fillText(config.value,5,20);
+  ctx.fill();
+  ctx.draw();
+}
 
 module.exports = {
   formatTime: formatTime,
   formatOptions: formatOptions,
-  drawCanvas: drawCanvas
+  drawCanvas: drawCanvas,
+  drawModal: drawModal
 }
 

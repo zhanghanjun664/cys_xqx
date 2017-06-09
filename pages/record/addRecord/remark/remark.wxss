@@ -20,9 +20,24 @@
   color: #ababab;
   border: 1px solid #ececec;
   font-size: 30rpx;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position: relative;
+}
+.rm_moodBox view text{
+  font-size: 32rpx;
+  margin-left: 16rpx;
 }
 .rm_moodBox .active{
-  color: #fff;
-  background-color: #fd9627;
-  border-style: #fd9627;
+  color: #fc9627;
+  /*background-color: #fd9627;*/
+  border:1px solid #fc9627;
+}
+.rm_selectedIcon{
+  width: 32rpx;
+  height: 32rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
 }

@@ -5,7 +5,7 @@ App({
     var logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs);
-    this.getUserInfo()
+    this.getUserInfo();
   },
   getUserInfo:function(cb){
     var that = this
@@ -20,10 +20,17 @@ App({
         success: function (data) {
           console.log(data);
           wx.getUserInfo({
+            withCredentials:false,
             success: function (res) {
               console.log(res);
               that.globalData.userInfo = res.userInfo
               typeof cb == "function" && cb(that.globalData.userInfo)
+            },
+            fail:function(res){
+              console.log(res)
+            },
+            complete:function(res){
+              console.log(res);
             }
           })
           
@@ -42,7 +49,7 @@ App({
         success(res) {
           console.log(res);
           if (wx.canIUse("openSetting")) {
-
+            console.log()
             if (!res.authSetting["scope.userInfo"]) {
               wx.openSetting({
                 success: function (data) {
