@@ -21,36 +21,23 @@
 }
 
 
-/*游标*/
-.canvas-cursor {
-	width: 4px;
-  position: absolute;
-  background-color: #fa9926;
-  top: -5px;
-  left:0;
-  right:0;
-  margin: 0 auto;
-	border-radius: 4px;
-}
-canvas{
-  background-color: #f8f8f8;
-}
 .sv_box{
   width: 90%;
   margin: 0 auto;
 }
 .ar_midBox{
   position: relative;
-  
+  margin-top: 40px
 }
 .ar_midTitleBox{
-  line-height: 2;
+  line-height: 1.6;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 .ar_midTitle{
-  position: absolute;
-  left: 5%;
-  top: 14px;
-  font-size: 28rpx;
+  font-size: 32rpx;
+  padding-left: 4%;
 }
 .ar_midTitleValue{
   color: #fd9627;
@@ -61,13 +48,9 @@ canvas{
   margin:0 auto;
   border: 1px solid #ececec;
 }
-.ar_midTitleSwitch{
-  position: absolute;
-  right: 5%;
-  top: 14px;
-}
+
 .ar_midTitleSwitch text{
-  font-size: 28rpx;
+  font-size: 32rpx;
   margin-right: 10rpx;
 }
 
@@ -77,4 +60,8 @@ canvas{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.highBox slider{
+  font-size: 30px;
 }

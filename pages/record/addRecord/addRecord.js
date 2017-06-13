@@ -1,16 +1,14 @@
 // pages/record/addRecord/addRecord.js
 var utils = require("../../../utils/util.js");
-var that;
-var minValue = 0;
 // var app = getApp();
 
-var app;
-wx.getSystemInfo({
-  success: function (data) {
-    console.log(data);
-    app = data;
-  }
-});
+// var app;
+// wx.getSystemInfo({
+//   success: function (data) {
+//     console.log(data);
+//     app = data;
+//   }
+// });
 
 var common = getApp().globalData;
 
@@ -22,20 +20,18 @@ Page({
   data: {
     highValue: 0,
     lowValue:0,
-    heartValue:0,
-    canvasHeight: 70,
-    canvasWB: "90%",
+    heartValue:60,
     showDate:"",
-    high_deltaX:0,
-    low_deltaX:0,
-    heart_deltaX:0,
     date:"",//value值 YYYY-MM-dd
     time:"",//hh:mm
     currentData:null,
     properties:{
       mood:"youshang",
       remark:"我是备注啊，我就是备注。"
-    }
+    },
+    types:null,
+    id:null,
+    
   },
 
   /**
@@ -110,143 +106,34 @@ Page({
     var pages = getCurrentPages();
     var prevPages = pages[pages.length - 2];
     var now = new Date();
+    this.data.types = options.type;
     if(options.type == 1){
-      this.data.currentData = prevPages.data.activeData
+      this.data.currentData = prevPages.data.activeData;
+      this.data.id = prevPages.data.activeData.id;
       this.setData({
         date: utils.formatTime("date:YY-MM-DD",prevPages.data.activeData.exam_date),
         time: utils.formatTime("time", prevPages.data.activeData.exam_date),
         highValue: prevPages.data.activeData.systolic,
         lowValue: prevPages.data.activeData.diastolic,
         heartValue: prevPages.data.activeData.heart_rate,
-        showDate: utils.formatTime("date", prevPages.data.activeData.exam_date)
+        showDate: utils.formatTime("date", prevPages.data.activeData.exam_date),
+        nowDate: utils.formatTime("date:YY-MM-DD", now)
       })
+      
     }else{
       this.setData({
         date: utils.formatTime("date:YY-MM-DD", now),
         time: utils.formatTime("time", now),
-        showDate: utils.formatTime("date", now)
+        showDate: utils.formatTime("date", now),
+        nowDate: utils.formatTime("date:YY-MM-DD", now)
       })
     }
     console.log(this.data);
-    that = this;
-    // 绘制标尺
-    that.drawRuler();
   },
-  drawRuler: function () {
-
-    /* 1.定义变量 */
-
-    // 1.1 定义原点与终点，x轴方向起点与终点各留半屏空白
-    var origion = { x: app.screenWidth*0.9 / 2, y: that.data.canvasHeight };
-    var end = { x: app.screenWidth*0.9  / 2, y: that.data.canvasHeight };
-    // 1.2 定义刻度线高度
-    var heightDecimal = 30;
-    var heightDigit = 20;
-    // 1.3 定义文本标签字体大小
-    var fontSize = 16;
-    // 1.4 最小刻度值
-    // 已经定义在全局，便于bindscroll访问
-    // 1.5 总刻度值
-    var maxValue = 200;
-    // 1.6 当前刻度值
-    var high_currentValue = 20;
-    var low_currentValue = 100;
-    var heart_currentValue = 100;
-    // 1.7 每个刻度所占位的px
-    var ratio = 10;
-    // 1.8 画布宽度
-    var canvasWidth = maxValue * ratio + app.screenWidth*0.9 - minValue * ratio;
-    // 设定scroll-view初始偏移
-    // that.setData({
-    //   canvasWidth: canvasWidth,
-    //   high_scrollLeft: (high_currentValue - minValue) * ratio,
-    //   low_scrollLeft: (low_currentValue - minValue) * ratio,
-    //   heart_scrollLeft: (heart_currentValue - minValue) * ratio
-    // });
-
-    /* 2.绘制 */
-
-    // 2.1初始化context
-    var canvasId = ["canvas-ruler1", "canvas-ruler2","canvas-ruler3"];
-    for(var k = 0;k<canvasId.length;k++){
-      const context = wx.createCanvasContext(canvasId[k]);
-      // 遍历maxValue
-      for (var i = 0; i <= maxValue; i += 5) {
-        context.beginPath();
-        // 2.2 画刻度线
-        context.moveTo(origion.x + (i - minValue) * ratio, origion.y - 5);
-        context.lineTo(origion.x + (i - minValue) * ratio, origion.y - (i % ratio == 0 ? heightDecimal : heightDigit));
-        context.setLineWidth(1);
-        context.setStrokeStyle(i % ratio == 0 ? 'gray' : 'darkgray');
-        context.stroke();
-        context.setFillStyle('#bbbbbb');
-        if (i % ratio == 0) {
-          context.setFontSize(fontSize);
-          // 为零补一个空格，让它看起来2位数，页面更整齐
-          context.fillText(i == 0 ? ' ' + i : i, origion.x + (i - minValue) * ratio - fontSize / 2, fontSize+10);
-        }
-        context.closePath();
-      }
-      context.draw();
-    }
-
-    // 2.4 绘制到context
-  },
-  high_scroll: function (e) {
-    console.log(e);
-    // deltaX 水平位置偏移位，每次滑动一次触发一次，所以需要记录从第一次触发滑动起，一共滑动了多少距离
-    this.data.high_deltaX += e.detail.deltaX;
-    var lvalue;
-    if (Math.floor(- this.data.high_deltaX / 10 + minValue) <= 0) {
-      lvalue = 0;
-    } else if (Math.floor(- this.data.high_deltaX / 10 + minValue) >= 200) {
-      lvalue = 200;
-    } else {
-      lvalue = Math.floor(- this.data.high_deltaX / 10 + minValue);
-    }
-    console.log(lvalue, this.data.highValue);
-    // 数据绑定
-    that.setData({
-      highValue: lvalue
-    });
-    console.log(lvalue,this.data.highValue);
-  },
-  low_scroll: function (e) {
-    console.log(e);
-    // deltaX 水平位置偏移位，每次滑动一次触发一次，所以需要记录从第一次触发滑动起，一共滑动了多少距离
-    this.data.low_deltaX += e.detail.deltaX;
-    var lvalue;
-    if (Math.floor(- this.data.low_deltaX / 10 + minValue) <= 0) {
-      lvalue = 0;
-    } else if (Math.floor(- this.data.low_deltaX / 10 + minValue) >= 200) {
-      lvalue = 200;
-    } else {
-      lvalue = Math.floor(- this.data.low_deltaX / 10 + minValue);
-    }
-    // 数据绑定
-    that.setData({
-      lowValue: lvalue
-    });
-  },
-  heart_scroll: function (e) {
-    console.log(e);
-    // deltaX 水平位置偏移位，每次滑动一次触发一次，所以需要记录从第一次触发滑动起，一共滑动了多少距离
-    this.data.heart_deltaX += e.detail.deltaX;
-    var lvalue;
-    if (Math.floor(- this.data.heart_deltaX / 10 + minValue) <= 0) {
-      lvalue = 0;
-    } else if (Math.floor(- this.data.heart_deltaX / 10 + minValue) >= 200) {
-      lvalue = 200;
-    } else {
-      lvalue = Math.floor(- this.data.heart_deltaX / 10 + minValue);
-    }
-    // 数据绑定
-    that.setData({
-      heartValue: lvalue
-    });
-  },
+  
   handleSwitch:function(e){
     console.log(e);
+    
   },
   changeDate:function(e){
     
@@ -262,16 +149,20 @@ Page({
     })
   },
   handleConfirm:function(){
-    console.log(this.data.date, this.data.time, this.data.highValue, this.data.lowValue, this.data.heartValue);
+    var that = this;
+    var record_date = that.data.date + " " + that.data.time;
+    var record_stamp = utils.formatTime("stamp",record_date);
     var data = {
-      diastolic: 70,//低压
-      exam_date: "2017-6-11 19:31:00",
-      heart_rate: 80,
+      diastolic: that.data.lowValue,//低压
+      exam_date: (that.data.date +" "+ that.data.time),
+      heart_rate: that.data.heartValue,
       properties: {
-        mood: "pingjing",
-        remark: "我是备注"
+        mood: that.data.properties.mood,
+        remark: that.data.properties.remark
       },
-      systolic: 100//高压
+      systolic: that.data.highValue,//高压
+      exam_timestamp: record_stamp,
+      id:that.data.id
     }
     console.log(data);
     wx.request({
@@ -279,7 +170,38 @@ Page({
       data: JSON.stringify(data),
       method:"POST",
       success:function(res){
+        var pages = getCurrentPages();
+        var prevPages = pages[pages.length - 2];
         console.log(res);
+        var handle_data = res.data.result;
+        
+        handle_data.showDate = utils.formatTime("date", handle_data.exam_date);
+        handle_data.showTime = utils.formatTime("time", handle_data.exam_date);
+        if(that.data.types == 2){
+          // 新增
+          console.log(prevPages.data.recordArr);
+          var saveIndex = [];
+          prevPages.data.recordArr.map(function(item,index){
+            console.log(item)
+            if (item.exam_timestamp < record_stamp) {
+              saveIndex.push(index)
+            }
+          })
+          console.log(saveIndex);
+          prevPages.data.recordArr.splice(saveIndex[0], 0, handle_data);
+          prevPages.setData({
+            recordArr: prevPages.data.recordArr
+          })
+        }else{
+          // 修改
+          prevPages.data.recordArr.splice(prevPages.data.activeIndex, 1, handle_data);
+          prevPages.setData({
+            recordArr: prevPages.data.recordArr
+          })
+        }
+        wx.navigateBack({
+          delta:1
+        })
       }
     })
   },
@@ -289,6 +211,23 @@ Page({
     var data = utils.formatOptions(that.data.properties);
     wx.navigateTo({
       url: 'remark/remark?'+data,
+    })
+  },
+  highChange:function(e){
+    console.log(e)
+    this.setData({
+      highValue:e.detail.value
+    })
+  },
+  lowChange: function (e) {
+    console.log(e)
+    this.setData({
+      lowValue: e.detail.value
+    })
+  },
+  heartChange:function(e){
+    this.setData({
+      heartValue: e.detail.value
     })
   }
 })

@@ -24,8 +24,12 @@ Page({
     page_size: 10,
     hasNext: true,
     canGet:true,
-    activeData:null
+    activeData:null,
+    activeIndex:null
   },
+  // shuaxin:function(){
+  //   app.getUserInfo();
+  // },
 
   /**
    * 生命周期函数--监听页面加载
@@ -73,6 +77,7 @@ Page({
           that.data.canGet = true;
           that.data.page_num++  ; 
           that.data.hasNext = res.data.result.has_next;
+          //处理显示时间
           res.data.result.content.map(function (item) {
             item.showDate = utils.formatTime("date", item.exam_date);
             item.showTime = utils.formatTime("time", item.exam_date);
@@ -153,6 +158,7 @@ Page({
     console.log(e);
     console.log(JSON.stringify(this.data.activeData));
     if (e.currentTarget.dataset.type==1){
+      this.data.activeIndex = e.currentTarget.dataset.index;
       this.data.activeData = this.data.recordArr[e.currentTarget.dataset.index]
     }
     console.log(JSON.stringify(this.data.activeData));

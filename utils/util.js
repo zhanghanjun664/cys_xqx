@@ -40,6 +40,8 @@ function formatTime(type,date) {
     return hh + ":" +mm
   } else if (type === "date:YY-MM-DD"){
     return year + "-" + month + "-" + day
+  }else if(type == "stamp"){
+    return Date.parse(date)
   }
   // switch (type){
   //   case "date": 

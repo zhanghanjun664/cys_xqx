@@ -1,6 +1,10 @@
 //app.js
 App({
   onLaunch: function () {
+    // wx.showModal({
+    //   title: '第一次',
+    //   content: '第一次啊',
+    // })
     //调用API从本地缓存中获取数据
     var logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
@@ -8,6 +12,14 @@ App({
     this.getUserInfo();
   },
   getUserInfo:function(cb){
+    wx.checkSession({
+      success:function(){
+        console.log("登录成功")
+      },
+      fail:function(){
+        console.log("登录态过期")
+      }
+    })
     var that = this
     if(this.globalData.userInfo){
       console.log("有");
@@ -16,26 +28,26 @@ App({
       console.log("无");
       
       //调用登录接口
-      wx.login({
-        success: function (data) {
-          console.log(data);
-          wx.getUserInfo({
-            withCredentials:false,
-            success: function (res) {
-              console.log(res);
-              that.globalData.userInfo = res.userInfo
-              typeof cb == "function" && cb(that.globalData.userInfo)
-            },
-            fail:function(res){
-              console.log(res)
-            },
-            complete:function(res){
-              console.log(res);
-            }
-          })
+      // wx.login({
+      //   success: function (data) {
+      //     console.log(data);
+      //     wx.getUserInfo({
+      //       withCredentials:true,
+      //       success: function (res) {
+      //         console.log(JSON.stringify(res));
+      //         that.globalData.userInfo = res.userInfo
+      //         typeof cb == "function" && cb(that.globalData.userInfo)
+      //       },
+      //       fail:function(res){
+      //         console.log(res)
+      //       },
+      //       complete:function(res){
+      //         console.log(res);
+      //       }
+      //     })
           
-        }
-      })
+      //   }
+      // })
     }
   },
   globalData:{

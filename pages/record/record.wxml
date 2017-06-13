@@ -16,7 +16,7 @@
           <view class="rc_dataContItem">
             <view class="rc_dataContItem_time">{{item.showTime}}</view>
             <!--高、低-->
-            <view class="rc_dataContItem_hg" style="background-color:{{item.blood_pressure_level==('HIGH_BLOODPRESSURE_ONE_LEVEL'||'HIGH_BLOODPRESSURE_TWO_LEVEL'||'HIGH_BLOODPRESSURE_THREE_LEVEL')?'#fff0d4':(item.blood_pressure_level=='HYPOTENSIO'?'#e6f2ff':'')}}">
+            <view class="rc_dataContItem_hg" style="background-color:{{item.blood_pressure_level == 'HIGH_BLOODPRESSURE_TWO_LEVEL'||item.blood_pressure_level =='HIGH_BLOODPRESSURE_ONE_LEVEL'||item.blood_pressure_level =='HIGH_BLOODPRESSURE_THREE_LEVEL' ?'#fff0d4':(item.blood_pressure_level=='HYPOTENSIO'?'#e6f2ff':'')}}">
               <view class="">{{item.systolic}}/{{item.diastolic}}</view>
               <view class="rc_dataContItem_hg_unit">mmHg</view>
             </view>
@@ -30,7 +30,7 @@
               <view wx:if="{{item.blood_pressure_level=='NORMAL_BLOODPRESSURE'&&item.heart_rate_level=='NORMAL'}}">指标正常</view>
               <view wx:if="{{item.blood_pressure_level!='NORMAL_BLOODPRESSURE'||item.heart_rate_level!='NORMAL'}}">
                 <view wx:if="{{item.blood_pressure_level!='NORMAL_BLOODPRESSURE'}}">{{item.blood_pressure_level_name}}</view>
-                <view wx:if="{{item.heart_rate_level=='NORMAL'}}">{{item.heart_rate_level_name}}</view>
+                <view wx:if="{{item.heart_rate_level!='NORMAL'}}">{{item.heart_rate_level_name}}</view>
               </view>
             </view>
             <view class="rc_dataContItem_icon">

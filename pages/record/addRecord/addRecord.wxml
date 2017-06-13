@@ -9,7 +9,7 @@
 
       <view class="ar_topBox_r font32">
         <picker mode="date" value="{{date}}" start="2000-1-1" end="{{nowDate}}" bindchange="changeDate" class="" style="margin-right:20rpx;">{{showDate}}</picker>
-        <picker mode="time" value="{{time}}" end="{{nowTime}}" bindchange="changeTime" class="">{{time?time:nowTime}}</picker>
+        <picker mode="time" value="{{time}}" bindchange="changeTime" class="">{{time?time:nowTime}}</picker>
         <image src="../../../other/img/icon_other_more.png" class="ar_icon_gt icon_gt" mode="aspectFit"></image>
       </view>
       
@@ -35,44 +35,35 @@
   <view class="1.2">
     <view class="ar_midBox">
       <view class="ar_midTitleBox">
-        <text class="ar_midTitle">收缩压（高压）mmHg</text>
-        <view class="ar_midTitleValue">{{highValue}}</view>
+        <text class="ar_midTitle">收缩压mmHg</text>
+        <!--<view class="ar_midTitleValue">{{highValue}}</view>-->
       </view>
-      <view style="position:relative;">
-        <scroll-view scroll-x="true" bindscroll="high_scroll" scroll-left="{{high_scrollLeft}}" style="width:{{canvasWB}}" class="ar_canvasBox">
-          <canvas canvas-id="canvas-ruler1" style="height: {{canvasHeight}}px; width:{{canvasWidth}}px;min-width:2300px;"></canvas>
-        </scroll-view>
-        <view class="canvas-cursor" style="height:{{canvasHeight+10}}px"></view>
+      <view style="position:relative;" class="highBox">
+        <slider activeColor="#fd9726" value="{{highValue}}" bindchange="highChange" show-value min="{{lowValue}}" max="200" />
       </view>
     </view>
 
     <view class="ar_midBox">
       <view class="ar_midTitleBox">
-        <text class="ar_midTitle">舒张压（低压）mmHg</text>
-        <view class="ar_midTitleValue">{{lowValue}}</view>
+        <text class="ar_midTitle">舒张压mmHg</text>
+        <!--<view class="ar_midTitleValue">{{lowValue}}</view>-->
       </view>
       <view style="position:relative;">
-        <scroll-view scroll-x="true" bindscroll="low_scroll" scroll-left="{{low_scrollLeft}}" style="width:{{canvasWB}}" class="ar_canvasBox">
-          <canvas canvas-id="canvas-ruler2" style="height: {{canvasHeight}}px; width: {{canvasWidth}}px;min-width:2300px;"></canvas>
-        </scroll-view>
-        <view class="canvas-cursor" style="height:{{canvasHeight+10}}px"></view>
+        <slider activeColor="#fd9726" value="{{lowValue}}" bindchange="lowChange" show-value max="{{highValue}}" />
       </view>
     </view>
     
     <view class="ar_midBox">
       <view class="ar_midTitleBox">
         <text class="ar_midTitle">心率范围bmp</text>
-        <view class="ar_midTitleValue">{{heartValue}}</view>
+        <!--<view class="ar_midTitleValue">{{heartValue}}</view>-->
         <view class="ar_midTitleSwitch">
           <text>是否记录</text>
-          <switch type="switch" color="#fd9627" bindchange="handleSwitch"/>
+          <switch type="switch" color="#fd9627" bindchange="handleSwitch" checked style="transform:scale(0.8)" />
         </view>
       </view>
       <view style="position:relative;">
-        <scroll-view scroll-x="true" bindscroll="heart_scroll" scroll-left="{{heart_scrollLeft}}" style="width:{{canvasWB}}" class="ar_canvasBox">
-          <canvas canvas-id="canvas-ruler3" style="height: {{canvasHeight}}px; width: {{canvasWidth}}px;min-width:2300px;"></canvas>
-        </scroll-view>
-        <view class="canvas-cursor" style="height:{{canvasHeight+10}}px"></view>
+        <slider activeColor="#fd9726" value="{{heartValue}}" bindchange="heartChange" show-value max="200"/>
       </view>
     </view>
 
