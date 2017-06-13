@@ -22,8 +22,8 @@
       </view>
 
       <view class="ar_topBox_r" bindtap="goRemark">
-          <image src="../../../other/img/mood/pingjing.png" class="standard_img" style="margin-right:16rpx;" ></image>
-          <text class="ar_remark" >暂无备注暂无备注暂无备注</text>
+          <image src="{{properties.mood?'../../../other/img/mood/'+properties.mood+'.png':''}}" class="standard_img" style="margin-right:16rpx;" ></image>
+          <text class="ar_remark" >{{properties.remark}}</text>
         <view class="">
         </view>
         <image src="../../../other/img/icon_other_more.png" class="ar_icon_gt icon_gt" mode="aspectFit"></image>

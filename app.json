@@ -1,8 +1,8 @@
 {
   "pages":[
     "pages/record/addRecord/addRecord",
-    "pages/record/addRecord/remark/remark",
     "pages/record/record",
+    "pages/record/addRecord/remark/remark",
     "pages/curve/curve",
     "pages/home/home",
     "pages/home/changeName/changeName"

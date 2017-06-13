@@ -2,6 +2,7 @@
 console.log(common);
 var app = getApp();
 var common = app.globalData;
+var utils = require("../../utils/util.js");
 Page({
 
   /**
@@ -17,7 +18,13 @@ Page({
         remark: "我是备注"
       },
       systolic:80
-    }
+    },
+    recordArr:[],
+    page_num: 0,
+    page_size: 10,
+    hasNext: true,
+    canGet:true,
+    activeData:null
   },
 
   /**
@@ -25,17 +32,61 @@ Page({
    */
   onLoad: function (options) {
     console.log(options);
+    // var that = this;
     // var data = {
-    //   date_from:"2017-5-23 19:35:00",
-    //   date_to:"2017-5-26 19:35:00"
+    //   page_num: 0,
+    //   page_size: 10
     // }
+
     // wx.request({
-    //   url: common.REST_PREFIX + '/genericapi/public/healthcenter/healthdata/bloodpressure',
-    //   data: JSON.stringify(data),
+    //   url: common.REST_PREFIX + "/genericapi/public/healthcenter/healthdata/bloodpressure/page?page_num=" + data.page_num + "&page_size=" + data.page_size,
     //   success: function (res) {
-    //     console.log(res);
+    //     console.log(res.data.result.content)
+    //     res.data.result.content.map(function(item){
+    //       item.showDate = utils.formatTime("date", item.exam_date);
+    //       item.showTime = utils.formatTime("time", item.exam_date);
+    //       return item
+    //     })
+    //     console.log(res.data.result.content)
+    //     that.setData({
+    //       recordArr:res.data.result.content
+    //     })
     //   }
     // })
+
+    
+    // this.setData({
+    //   recordArr: this.getData()
+    // })
+    this.getData()
+
+  },
+  getData:function(){
+    var that = this;
+    console.log(that.data)
+    if (that.data.hasNext && that.data.canGet){
+      that.data.canGet = false;
+      wx.request({
+        url: common.REST_PREFIX + "/genericapi/public/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=" + that.data.page_size,
+        success: function (res) {
+          console.log(res)
+          that.data.canGet = true;
+          that.data.page_num++  ; 
+          that.data.hasNext = res.data.result.has_next;
+          res.data.result.content.map(function (item) {
+            item.showDate = utils.formatTime("date", item.exam_date);
+            item.showTime = utils.formatTime("time", item.exam_date);
+            return item
+          })
+          console.log(res.data.result.content)
+
+          that.data.recordArr.push(...res.data.result.content);
+          that.setData({
+            recordArr: that.data.recordArr
+          })
+        }
+      })
+    }
   },
 
   /**
@@ -98,9 +149,39 @@ Page({
       console.log(info)
     });
   },
-  openAddRecord:function(){
+  openAddRecord:function(e){
+    console.log(e);
+    console.log(JSON.stringify(this.data.activeData));
+    if (e.currentTarget.dataset.type==1){
+      this.data.activeData = this.data.recordArr[e.currentTarget.dataset.index]
+    }
+    console.log(JSON.stringify(this.data.activeData));
     wx.navigateTo({
-      url: 'addRecord/addRecord'
+      url: 'addRecord/addRecord?type=' + e.currentTarget.dataset.type
     })
   }
 })
+
+function getData(){
+  var data = {
+    page_num: 0,
+    page_size: 10,
+    hasNext: true
+  }
+  console.log(data)
+  if (data.hasNext) {
+    wx.request({
+      url: common.REST_PREFIX + "/genericapi/public/healthcenter/healthdata/bloodpressure/page?page_num=" + data.page_num + "&page_size=" + data.page_size,
+      success: function (res) {
+        data.page_num++;
+        data.hasNext = res.data.result.has_next;
+        res.data.result.content.map(function (item) {
+          item.showDate = utils.formatTime("date", item.exam_date);
+          item.showTime = utils.formatTime("time", item.exam_date);
+          return item
+        })
+        return res.data.result.content
+      }
+    })
+  }
+}

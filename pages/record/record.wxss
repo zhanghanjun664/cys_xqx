@@ -17,7 +17,7 @@
 }
 .rc_dataBox{
   height: 80%;
-  padding-top: 40px;
+  padding-top: 30px;
 }
 .rc_dataContItem{
   width: 100%;
@@ -31,13 +31,11 @@
 .rc_dataCont > view{
   float: left;
 }
-.rc_dateDayBox{
-  margin-top: 10px;
-}
 .rc_dataTitle{
   padding:6rpx 16rpx;
   color: #a7a7a7;
   font-size: 32rpx;
+  margin-top: 10px;
 }
 .rc_dataContItem_time{
   color: #a7a7a7;

@@ -6,8 +6,13 @@ Page({
    * 页面的初始数据
    */
   data: {
-    moodBox: ["平静", "愉悦", "兴奋", "感情", "思念", "低落", "焦虑", "忧伤", "愤怒", "懊恼"],
-    selectedMood:null
+    moodBox: [],
+    selectedMood:null,
+    properties:{
+      remark: "我是备注页的内容",
+      mood:""
+    },
+    canSave:false
   },
 
   /**
@@ -19,11 +24,26 @@ Page({
       url: common.REST_PREFIX +'/genericapi/public/healthcenter/healthdata/moods',
       success:function(res){
         console.log(res);
+        var moodIndex = null;
+        res.data.result.map(function(item,index){
+          if (item.key == options.mood){
+            moodIndex = index
+          }
+        })
+
         that.setData({
-          moodBox:res.data.result
+          moodBox:res.data.result,
+          selectedMood:moodIndex
         })
       }
     })
+    this.data.properties.remark = options.remark;
+    this.data.properties.mood = options.mood;
+    console.log(this.data.properties)
+    this.setData({
+      properties: that.data.properties
+    })
+    
   },
 
   /**
@@ -76,8 +96,35 @@ Page({
   },
   handleClickMood:function(e){
     console.log(e);
+    
+    var index = e.currentTarget.dataset.index;
+    console.log(this.data.moodBox[index]);
+    if (index != this.data.selectedMood ){
+      this.setData({
+        selectedMood: index,
+        canSave: true
+      })
+    }
+    this.data.properties.mood = this.data.moodBox[index].key;
+    
+  },
+  handleInput:function(e){
+    console.log(e);
+    this.data.properties.remark = e.detail.value;
     this.setData({
-      selectedMood: e.currentTarget.dataset.index
+      canSave:true
+    })
+  },
+  handleSave:function(){
+    console.log(this.data.properties)
+    var that = this;
+    var pages = getCurrentPages();
+    var prevPages = pages[pages.length - 2];
+    prevPages.setData({
+      properties:that.data.properties
+    })
+    wx.navigateBack({
+      delta:1
     })
   }
 })

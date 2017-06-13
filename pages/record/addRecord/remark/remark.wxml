@@ -1,14 +1,14 @@
 <!--pages/record/addRecord/remark/remark.wxml-->
 <view class="width90">
-  <textarea placeholder="记录今天的心情、天气、用药情况等信息" placeholder-style="color:#bbbbbb;font-size:34rpx" class="rm_text"/>
+  <textarea placeholder="记录今天的心情、天气、用药情况等信息" placeholder-style="color:#bbbbbb;font-size:34rpx" class="rm_text" value="{{properties.remark}}" maxlength="200" bindinput="handleInput" />
   <view style="font-size:32rpx;">今日心情</view>
   <view class="rm_moodBox clearfix">
     <view class="{{selectedMood == index?'active':''}}" wx:for="{{moodBox}}" wx:key="{{index}}" data-index="{{index}}" bindtap="handleClickMood">
       <image src="../../../../other/img/icon_cho.png" class="rm_selectedIcon" wx:if="{{selectedMood == index}}"></image>
       <image src="../../../../other/img/mood/{{item.key}}.png" class="standard_img"></image>
-      <text>{{item.name}}</text>
+      <text style="font-size:30rpx">{{item.name}}</text>
     </view>
   </view>
-  <button type="cys_danger" class="btn_addRecord">保 存</button>
-  <!--<button type="cys_orange" class="btn_addRecord">保 存</button>-->
+  <button type="cys_danger" class="btn_addRecord" wx:if="{{!canSave}}">保 存</button>
+  <button type="cys_orange" class="btn_addRecord" wx:if="{{canSave}}" bindtap="handleSave">保 存</button>
 </view>

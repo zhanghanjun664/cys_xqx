@@ -25,10 +25,17 @@ Page({
     heartValue:0,
     canvasHeight: 70,
     canvasWB: "90%",
-    showDate:"2014年1月1日",
+    showDate:"",
     high_deltaX:0,
     low_deltaX:0,
-    heart_deltaX:0
+    heart_deltaX:0,
+    date:"",//value值 YYYY-MM-dd
+    time:"",//hh:mm
+    currentData:null,
+    properties:{
+      mood:"youshang",
+      remark:"我是备注啊，我就是备注。"
+    }
   },
 
   /**
@@ -46,12 +53,11 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    console.log(JSON.stringify(this.data))
     var now = new Date();
-    this.setData({
-      nowDate: utils.formatTime("date:YY-MM-DD", now),
-      nowTime: utils.formatTime("time", now),
-    })
+    // this.setData({
+    //   nowDate: utils.formatTime("date:YY-MM-DD", now),
+    //   nowTime: utils.formatTime("time", now),
+    // })
   },
 
   /**
@@ -99,7 +105,29 @@ Page({
     })
   },
   onLoad: function (options) {
-    console.log(JSON.stringify(this.data))
+    // type  1:点击对应数据进来    2：点击添加进来，显示空页面
+    console.log(options);
+    var pages = getCurrentPages();
+    var prevPages = pages[pages.length - 2];
+    var now = new Date();
+    if(options.type == 1){
+      this.data.currentData = prevPages.data.activeData
+      this.setData({
+        date: utils.formatTime("date:YY-MM-DD",prevPages.data.activeData.exam_date),
+        time: utils.formatTime("time", prevPages.data.activeData.exam_date),
+        highValue: prevPages.data.activeData.systolic,
+        lowValue: prevPages.data.activeData.diastolic,
+        heartValue: prevPages.data.activeData.heart_rate,
+        showDate: utils.formatTime("date", prevPages.data.activeData.exam_date)
+      })
+    }else{
+      this.setData({
+        date: utils.formatTime("date:YY-MM-DD", now),
+        time: utils.formatTime("time", now),
+        showDate: utils.formatTime("date", now)
+      })
+    }
+    console.log(this.data);
     that = this;
     // 绘制标尺
     that.drawRuler();
@@ -129,12 +157,12 @@ Page({
     // 1.8 画布宽度
     var canvasWidth = maxValue * ratio + app.screenWidth*0.9 - minValue * ratio;
     // 设定scroll-view初始偏移
-    that.setData({
-      canvasWidth: canvasWidth,
-      high_scrollLeft: (high_currentValue - minValue) * ratio,
-      low_scrollLeft: (low_currentValue - minValue) * ratio,
-      heart_scrollLeft: (heart_currentValue - minValue) * ratio
-    });
+    // that.setData({
+    //   canvasWidth: canvasWidth,
+    //   high_scrollLeft: (high_currentValue - minValue) * ratio,
+    //   low_scrollLeft: (low_currentValue - minValue) * ratio,
+    //   heart_scrollLeft: (heart_currentValue - minValue) * ratio
+    // });
 
     /* 2.绘制 */
 
@@ -147,15 +175,10 @@ Page({
         context.beginPath();
         // 2.2 画刻度线
         context.moveTo(origion.x + (i - minValue) * ratio, origion.y - 5);
-        // 画线到刻度高度，10的位数就加高
         context.lineTo(origion.x + (i - minValue) * ratio, origion.y - (i % ratio == 0 ? heightDecimal : heightDigit));
-        // 设置属性
         context.setLineWidth(1);
-        // 10的位数就加深
         context.setStrokeStyle(i % ratio == 0 ? 'gray' : 'darkgray');
-        // 描线
         context.stroke();
-        // 2.3 描绘文本标签
         context.setFillStyle('#bbbbbb');
         if (i % ratio == 0) {
           context.setFontSize(fontSize);
@@ -241,14 +264,14 @@ Page({
   handleConfirm:function(){
     console.log(this.data.date, this.data.time, this.data.highValue, this.data.lowValue, this.data.heartValue);
     var data = {
-      diastolic: 100,
-      exam_date: "2017-5-24 19:35:00",
-      heart_rate: 95,
+      diastolic: 70,//低压
+      exam_date: "2017-6-11 19:31:00",
+      heart_rate: 80,
       properties: {
         mood: "pingjing",
         remark: "我是备注"
       },
-      systolic: 80
+      systolic: 100//高压
     }
     console.log(data);
     wx.request({
@@ -261,8 +284,11 @@ Page({
     })
   },
   goRemark:function(){
+    var that = this;
+    console.log(that.data.properties);
+    var data = utils.formatOptions(that.data.properties);
     wx.navigateTo({
-      url: 'remark/remark',
+      url: 'remark/remark?'+data,
     })
   }
 })

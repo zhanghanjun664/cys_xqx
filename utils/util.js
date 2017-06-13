@@ -18,10 +18,14 @@
 function formatTime(type,date) {
   if(type == 4){
     var arr = date.split("-");
-    return arr[0]+"年"+arr[1]+"月"+arr[2]+"日"
+    return arr[0] + "年" + arr[1] +"月"+arr[2]+"日"
   }
-
-
+  
+  if(typeof(date) === "string" ){
+    date = date.replace(/-/g,":").replace(" ",":");
+    date = date.split(":");
+    date = new Date(date[0], (date[1] - 1), date[2], date[3], date[4]);
+  }
   var year = date.getFullYear()
   var month = date.getMonth() + 1
   var day = date.getDate()
@@ -37,6 +41,20 @@ function formatTime(type,date) {
   } else if (type === "date:YY-MM-DD"){
     return year + "-" + month + "-" + day
   }
+  // switch (type){
+  //   case "date": 
+  //     return year + "年" + month + "月" + day + "日"
+  //   case "time":
+  //     var hh = hour.toString().length == 1 ? "0" + hour : hour;
+  //     var mm = minute.toString().length == 1 ? "0" + minute : minute;
+  //     return hh + ":" + mm
+  //   case "te:YY-MM-DD":
+  //     return year + "-" + month + "-" + day
+  //   case 5:
+  //     return year + "年" + month + "月" + day + "日"
+  //   case 6:
+  //     return year + "年" + month + "月" + day + "日"
+  // }
 
 }
 
