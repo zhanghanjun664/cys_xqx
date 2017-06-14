@@ -42,6 +42,8 @@ function formatTime(type,date) {
     return year + "-" + month + "-" + day
   }else if(type == "stamp"){
     return Date.parse(date)
+  }else if(type == "m/d"){
+    return month+"/"+day
   }
   // switch (type){
   //   case "date": 
@@ -73,116 +75,115 @@ function formatOptions(obj){
 }
 
 function drawCanvas(config) {
+  var rNum = 7;
   var ctx = wx.createCanvasContext(config.id);
-  var padding = config.padding || 50;
-  var xstandard = 40;
+  var padding = config.padding || 40;
   var paddingLeft = 20;
+  var xstandard = (config.canvasW - paddingLeft * 2 - padding) / (rNum-1);
+  console.log(xstandard)
   // 排序(根据x从小到大)
-  config.box.sort(function (a, b) {
-    return a.x - b.x
-  })
-  console.log(config.box)
+  // config.box.sort(function (a, b) {
+  //   return a.x - b.x
+  // })
+  console.log(config)
 
   // 警戒线
   ctx.beginPath();
   ctx.setLineWidth(1);
-  ctx.setStrokeStyle("#cadcfe");
-  ctx.moveTo(show("x", 0), show("y", 90));
-  ctx.lineTo(show("x", config.canvasW), show("y", 90));
+  ctx.setStrokeStyle(config.dangerLineColor);
+  ctx.moveTo(show("x", 0), show("y", config.dangerValue));
+  ctx.lineTo(show("x", config.canvasW), show("y", config.dangerValue));
   ctx.stroke();
-  // ctx.setFillStyle("#4e8cfd");
-  // ctx.setFontSize(14);
-  // ctx.fillText("舒张压-警戒线", show("x", 0), show("y", 95));
-  // ctx.fill();
+  ctx.setFillStyle(config.dangerColor);
+  ctx.setFontSize(14);
+  ctx.setTextAlign("right");
+  ctx.fillText(config.dangerFont, show("x", config.canvasW - padding), show("y", config.dangerValue+5));
+  ctx.fill();
+  if(config.chartType == 2){
 
-  ctx.beginPath();
-  ctx.moveTo(show("x", 0), show("y", 140));
-  ctx.lineTo(show("x", config.canvasW), show("y", 140));
-  ctx.setStrokeStyle("#ffd9b2");
-  ctx.stroke();
-  // ctx.setFillStyle("#ff8201");
-  // ctx.setFontSize(14);
-  // ctx.fillText("收缩压-警戒线", show("x", 0), show("y", 145));
-  // ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(show("x", 0), show("y", config.dangerValue2));
+    ctx.lineTo(show("x", config.canvasW), show("y", config.dangerValue2));
+    ctx.setStrokeStyle(config.dangerLineColor2);
+    ctx.stroke();
+    ctx.setFillStyle(config.dangerColor2);
+    ctx.setFontSize(14);
+    ctx.fillText(config.dangerFont2, show("x", config.canvasW - padding), show("y", config.dangerValue2+5));
+    ctx.fill();
+  }
 
 
-  // 清除超出部分
-  // ctx.clearRect(padding, config.canvasH - padding, config.canvasW, padding);
   // 坐标
   ctx.beginPath();
-  ctx.moveTo(0, config.canvasH - padding);
-  ctx.lineTo(config.canvasW, config.canvasH - padding);
+  // x轴
+  ctx.moveTo(0, show("y",0));
+  ctx.lineTo(config.canvasW, show("y",0));
+  // y轴
+  ctx.moveTo(show("x", 0), show("y",0));
+  ctx.lineTo(show("x",0), show("y",config.canvasH));
   ctx.setStrokeStyle("#c4c4c4");
   ctx.setLineWidth(1);
   ctx.stroke();
 
-  // 刻度
+  // 刻度(文字)
   ctx.beginPath();
   ctx.setFontSize(14);
   var xlength = Math.ceil(config.canvasW / xstandard) - 1;
+  var lengthY = Math.ceil(config.canvasH / 40) - 1;
   // ctx.setTextAlign("center");
   ctx.setFillStyle("#acacac");
-  for (var i = 0; i < xlength; i++) {
-    ctx.fillText(i, i * xstandard + paddingLeft, config.canvasH+20 - padding);
+  ctx.setTextAlign("center");
+  for (var i = 0; i < xlength; i+=2) {
+    ctx.fillText(config.box[i].showX, show("x", i * xstandard + paddingLeft), show("y",-20));
+    ctx.moveTo(show("x",paddingLeft+i*xstandard),show("y",0));
+    ctx.lineTo(show("x", paddingLeft + i * xstandard), show("y", 5));
+  }
+  ctx.stroke();
+  for (var i = 1; i < (lengthY - 1); i++) {
+    ctx.fillText(40 * i, show("x",-20),show("y",i*40));
   }
 
   // 画线
   ctx.beginPath();
-  ctx.moveTo(paddingLeft, show("y", config.box[0].y));
-  for (var i = 1; i < config.box.length; i++) {
-    ctx.lineTo(paddingLeft + xstandard * i, show("y", config.box[i].y));
+  ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].systolic));
+  for (var i = 1; i < rNum; i++) {
+    ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].systolic));
   }
   ctx.setLineWidth(config.lineWidth);
   ctx.setStrokeStyle(config.color);
   ctx.stroke();
   // 描点
-  for (var i = 0; i < config.box.length; i++) {
+  for (var i = 0; i < rNum; i++) {
     ctx.beginPath();
-    ctx.arc(paddingLeft + xstandard * i, show("y", config.box[i].y), config.r, 0, Math.PI * 2);
+    ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].systolic), config.r, 0, Math.PI * 2);
     ctx.setFillStyle(config.color);
     ctx.fill();
   }
 
-
-  // 左半部分
-  var ctx2 = wx.createCanvasContext(config.id2);
-  ctx2.beginPath();
-  // 背景涂白
-  ctx2.setFillStyle("white");
-  ctx2.fillRect(0, 0, 200, config.canvasH - 50);
-  ctx2.fill();
-  // x延长线
-  ctx2.setStrokeStyle("#c4c4c4");
-  ctx2.moveTo(0, config.canvasH - 50);
-  ctx2.lineTo(100, config.canvasH - 50);
-  ctx2.stroke();
-
-  // 文字
-  var lengthY = Math.ceil(config.canvasH / 40);
-  console.log(lengthY)
-  ctx2.setFontSize(14);
-  ctx2.setFillStyle("#999999");
-  for (var i = 1; i < lengthY; i++) {
-    ctx2.fillText(40 * i, 12, config.canvasH - 50 - i * 40);
+  if (config.chartType == 2){
+    // 画线
+    ctx.beginPath();
+    ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].diastolic));
+    for (var i = 1; i < rNum; i++) {
+      ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].diastolic));
+    }
+    ctx.setLineWidth(config.lineWidth);
+    ctx.setStrokeStyle(config.color2);
+    ctx.stroke();
+    // 描点
+    for (var i = 0; i < rNum; i++) {
+      ctx.beginPath();
+      ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].diastolic), config.r, 0, Math.PI * 2);
+      ctx.setFillStyle(config.color2);
+      ctx.fill();
+    }
   }
-  ctx2.fill();
-
-  // y轴
-  ctx2.beginPath();
-  ctx2.moveTo(config.screenW * 0.12 - 1, 0);
-  ctx2.lineTo(config.screenW * 0.12 - 1, config.canvasH - 50);
-  ctx2.stroke();
-
-  ctx2.draw();
-
-  
-
  
 
   ctx.draw();
   function show(type, num) {
     if (type == "x") {
-      return num
+      return num+padding
     }
     if (type == "y") {
       return config.canvasH - padding - num

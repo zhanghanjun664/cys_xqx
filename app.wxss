@@ -79,3 +79,6 @@ page{
   margin:auto;
   bottom: 40rpx;
 }
+.font28{
+  font-size: 28rpx;
+}

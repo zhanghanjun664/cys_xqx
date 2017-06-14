@@ -28,26 +28,26 @@ App({
       console.log("无");
       
       //调用登录接口
-      // wx.login({
-      //   success: function (data) {
-      //     console.log(data);
-      //     wx.getUserInfo({
-      //       withCredentials:true,
-      //       success: function (res) {
-      //         console.log(JSON.stringify(res));
-      //         that.globalData.userInfo = res.userInfo
-      //         typeof cb == "function" && cb(that.globalData.userInfo)
-      //       },
-      //       fail:function(res){
-      //         console.log(res)
-      //       },
-      //       complete:function(res){
-      //         console.log(res);
-      //       }
-      //     })
+      wx.login({
+        success: function (data) {
+          console.log(data);
+          wx.getUserInfo({
+            withCredentials:true,
+            success: function (res) {
+              console.log(JSON.stringify(res));
+              that.globalData.userInfo = res.userInfo
+              typeof cb == "function" && cb(that.globalData.userInfo)
+            },
+            fail:function(res){
+              console.log(res)
+            },
+            complete:function(res){
+              console.log(res);
+            }
+          })
           
-      //   }
-      // })
+        }
+      })
     }
   },
   globalData:{

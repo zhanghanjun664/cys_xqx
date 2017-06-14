@@ -23,7 +23,8 @@
 
       <view class="ar_topBox_r" bindtap="goRemark">
           <image src="{{properties.mood?'../../../other/img/mood/'+properties.mood+'.png':''}}" class="standard_img" style="margin-right:16rpx;" ></image>
-          <text class="ar_remark" >{{properties.remark}}</text>
+          <text class="ar_remark" wx:if="{{properties.remark || properties.mood}}" >{{properties.remark}}</text>
+          <text class="ar_noRemark font28" wx:if="{{!properties.remark && !properties.mood}}">暂无备注</text>
         <view class="">
         </view>
         <image src="../../../other/img/icon_other_more.png" class="ar_icon_gt icon_gt" mode="aspectFit"></image>
@@ -39,7 +40,7 @@
         <!--<view class="ar_midTitleValue">{{highValue}}</view>-->
       </view>
       <view style="position:relative;" class="highBox">
-        <slider activeColor="#fd9726" value="{{highValue}}" bindchange="highChange" show-value min="{{lowValue}}" max="200" />
+        <slider activeColor="#fd9726" value="{{highValue}}" bindchange="highChange" show-value max="200" />
       </view>
     </view>
 
@@ -49,7 +50,7 @@
         <!--<view class="ar_midTitleValue">{{lowValue}}</view>-->
       </view>
       <view style="position:relative;">
-        <slider activeColor="#fd9726" value="{{lowValue}}" bindchange="lowChange" show-value max="{{highValue}}" />
+        <slider activeColor="#fd9726" value="{{lowValue}}" bindchange="lowChange" show-value max="200"/>
       </view>
     </view>
     

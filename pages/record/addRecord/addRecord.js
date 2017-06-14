@@ -26,12 +26,12 @@ Page({
     time:"",//hh:mm
     currentData:null,
     properties:{
-      mood:"youshang",
-      remark:"我是备注啊，我就是备注。"
+      mood:"",
+      remark:""
     },
     types:null,
     id:null,
-    
+    noteHeart:true
   },
 
   /**
@@ -110,6 +110,8 @@ Page({
     if(options.type == 1){
       this.data.currentData = prevPages.data.activeData;
       this.data.id = prevPages.data.activeData.id;
+      // this.data.properties.mood = prevPages.data.activeData.properties.mood;
+      // this.data.properties.remark = prevPages.data.activeData.properties.remark;
       this.setData({
         date: utils.formatTime("date:YY-MM-DD",prevPages.data.activeData.exam_date),
         time: utils.formatTime("time", prevPages.data.activeData.exam_date),
@@ -117,9 +119,10 @@ Page({
         lowValue: prevPages.data.activeData.diastolic,
         heartValue: prevPages.data.activeData.heart_rate,
         showDate: utils.formatTime("date", prevPages.data.activeData.exam_date),
-        nowDate: utils.formatTime("date:YY-MM-DD", now)
+        nowDate: utils.formatTime("date:YY-MM-DD", now),
+        properties: this.data.properties
       })
-      
+      console.log(this.data, prevPages.data.activeData)
     }else{
       this.setData({
         date: utils.formatTime("date:YY-MM-DD", now),
@@ -133,7 +136,7 @@ Page({
   
   handleSwitch:function(e){
     console.log(e);
-    
+    this.data.noteHeart = e.detail.value;
   },
   changeDate:function(e){
     
@@ -151,11 +154,12 @@ Page({
   handleConfirm:function(){
     var that = this;
     var record_date = that.data.date + " " + that.data.time;
-    var record_stamp = utils.formatTime("stamp",record_date);
+    var record_stamp = utils.formatTime("stamp",record_date);//拿时间戳
+    var heart_rate = this.data.noteHeart ? this.data.heartValue : "";//心率
     var data = {
       diastolic: that.data.lowValue,//低压
       exam_date: (that.data.date +" "+ that.data.time),
-      heart_rate: that.data.heartValue,
+      heart_rate: heart_rate,
       properties: {
         mood: that.data.properties.mood,
         remark: that.data.properties.remark
@@ -165,45 +169,53 @@ Page({
       id:that.data.id
     }
     console.log(data);
-    wx.request({
-      url: common.REST_PREFIX + '/genericapi/public/healthcenter/healthdata/bloodpressure',
-      data: JSON.stringify(data),
-      method:"POST",
-      success:function(res){
-        var pages = getCurrentPages();
-        var prevPages = pages[pages.length - 2];
-        console.log(res);
-        var handle_data = res.data.result;
-        
-        handle_data.showDate = utils.formatTime("date", handle_data.exam_date);
-        handle_data.showTime = utils.formatTime("time", handle_data.exam_date);
-        if(that.data.types == 2){
-          // 新增
-          console.log(prevPages.data.recordArr);
-          var saveIndex = [];
-          prevPages.data.recordArr.map(function(item,index){
-            console.log(item)
-            if (item.exam_timestamp < record_stamp) {
-              saveIndex.push(index)
-            }
-          })
-          console.log(saveIndex);
-          prevPages.data.recordArr.splice(saveIndex[0], 0, handle_data);
-          prevPages.setData({
-            recordArr: prevPages.data.recordArr
-          })
-        }else{
-          // 修改
-          prevPages.data.recordArr.splice(prevPages.data.activeIndex, 1, handle_data);
-          prevPages.setData({
-            recordArr: prevPages.data.recordArr
+    if (that.data.highValue < that.data.lowValue){
+      wx.showToast({
+        title: '收缩压必须大于舒张压！',
+        duration:2000
+      })
+    }else{
+      console.log("数据没问题")
+      wx.request({
+        url: common.REST_PREFIX + '/genericapi/public/healthcenter/healthdata/bloodpressure',
+        data: JSON.stringify(data),
+        method:"POST",
+        success:function(res){
+          var pages = getCurrentPages();
+          var prevPages = pages[pages.length - 2];
+          console.log(res);
+          var handle_data = res.data.result;
+          
+          handle_data.showDate = utils.formatTime("date", handle_data.exam_date);
+          handle_data.showTime = utils.formatTime("time", handle_data.exam_date);
+          if(that.data.types == 2){
+            // 新增
+            console.log(prevPages.data.recordArr);
+            var saveIndex = [];
+            prevPages.data.recordArr.map(function(item,index){
+              console.log(item)
+              if (item.exam_timestamp < record_stamp) {
+                saveIndex.push(index)
+              }
+            })
+            console.log(saveIndex);
+            prevPages.data.recordArr.splice(saveIndex[0], 0, handle_data);
+            prevPages.setData({
+              recordArr: prevPages.data.recordArr
+            })
+          }else{
+            // 修改
+            prevPages.data.recordArr.splice(prevPages.data.activeIndex, 1, handle_data);
+            prevPages.setData({
+              recordArr: prevPages.data.recordArr
+            })
+          }
+          wx.navigateBack({
+            delta:1
           })
         }
-        wx.navigateBack({
-          delta:1
-        })
-      }
-    })
+      })
+    }
   },
   goRemark:function(){
     var that = this;
@@ -215,19 +227,22 @@ Page({
   },
   highChange:function(e){
     console.log(e)
-    this.setData({
-      highValue:e.detail.value
-    })
+    this.data.highValue = e.detail.value;
+    // this.setData({
+    //   highValue:e.detail.value
+    // })
   },
   lowChange: function (e) {
     console.log(e)
-    this.setData({
-      lowValue: e.detail.value
-    })
+    this.data.lowValue = e.detail.value;
+    // this.setData({
+    //   lowValue: e.detail.value
+    // })
   },
   heartChange:function(e){
-    this.setData({
-      heartValue: e.detail.value
-    })
+    this.data.heartValue = e.detail.value;
+    // this.setData({
+    //   heartValue: e.detail.value
+    // })
   }
 })

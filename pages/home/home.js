@@ -133,11 +133,4 @@ Page({
       })
     })
   },
-  login:function(){
-    wx.login({
-      success:function(code){
-        console.log(code)
-      }
-    })
-  }
 })

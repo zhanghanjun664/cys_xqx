@@ -30,7 +30,6 @@
       </view>
     </view>
   </view>
-  <button type="cys_orange" bindtap="login" >登陆</button>
   
   <button open-type="contact" class="hm_contact" size="mini">
     <image src="../../other/img/icon_other_chat.png" class="standard_img"></image>

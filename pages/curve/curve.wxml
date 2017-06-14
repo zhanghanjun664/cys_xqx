@@ -13,8 +13,8 @@
       </view>
     </view>
   </view>
-  
-  <view class="cv_canvasBox clearfix">
+
+  <!--<view class="cv_canvasBox clearfix">
     <scroll-view scroll-x="true" scroll-left="{{setCanvasL}}" bindscroll="handleScroll" class="cv_canvasR" bindscrolltoupper="getData" >
       <canvas canvas-id="firstCanvas" class="canvas2" style="width:{{canvasW}}px;height:{{canvasH}}px" bindtap="clickCanvas" />
     </scroll-view>
@@ -23,5 +23,35 @@
       <canvas canvas-id="showMsg_icon" class="showMsg_icon" />
     </view>
     <canvas canvas-id="canvasY" class="cv_canvasL" style="height:{{canvasH}}px"/>
+  </view>-->
+
+  <view class="cv_canvasBox clearfix">
+    <canvas canvas-id="pressureCanvas" class="canvas2" style="width:{{canvasW}}px;height:{{canvasH}}px" bindtap="clickPressureCanvas" />
+    <view class="showMsgBox" style="top:{{showPressureTop}}px;left:{{showPressureLeft}}px;" wx:if="{{showPressureBox}}" >
+      <canvas canvas-id="showPressureBox" class="showMsg" />
+      <canvas canvas-id="showMsg_icon" class="showMsg_icon" />
+    </view>
+  </view>
+
+</view>
+<!--心率-->
+<view class="">
+  <view class="cv_pressureBox clearfix">
+    <view style="font-size:36rpx">心率曲线图(bmp)</view>
+    <view class="cv_cv_pressureRight">
+
+      <view class="cv_highBox">
+        <view class="cv_square"></view>
+        <view class="font26 pull-left">心率</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cv_canvasBox clearfix">
+    <canvas canvas-id="heartCanvas" class="canvas2" style="width:{{canvasW}}px;height:{{canvasH}}px" bindtap="clickHeartCanvas" />
+    <view class="showMsgBox" style="top:{{showMsgTop}}px;left:{{showMsgLeft}}px;" wx:if="{{showHeartBox}}" >
+      <canvas canvas-id="showHeartMsg" class="showMsg" />
+      <canvas canvas-id="showMsg_icon" class="showMsg_icon" />
+    </view>
   </view>
 </view>

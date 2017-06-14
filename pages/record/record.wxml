@@ -22,7 +22,7 @@
             </view>
 
             <view class="rc_dataContItem_heart" style="background-color:{{item.heart_rate_level=='TACHYCARDIA'?'#ffddf9':(item.heart_rate_level=='BRADYCARDIA'?'#eeeeee':'')}}">
-              <view class="">{{item.heart_rate}}</view>
+              <view class="">{{item.heart_rate?item.heart_rate:"-"}}</view>
               <view class="rc_dataContItem_hg_unit">bmp</view>
             </view>
 
