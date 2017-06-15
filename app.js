@@ -1,9 +1,9 @@
 //app.js
 'use strict';
-console.log("app页面")
+console.log("app页面");
+var a =0;
 App({
   onLaunch: function () {
-    console.log("app启动")
     // wx.showModal({
     //   title: '第一次',
     //   content: '第一次啊',
@@ -12,7 +12,7 @@ App({
     // var logs = wx.getStorageSync('logs') || []
     // logs.unshift(Date.now())
     // wx.setStorageSync('logs', logs);
-    this.getUserInfo();
+    // this.getUserInfo();
   },
   getUserInfo:function(cb){
     var that = this
@@ -41,11 +41,13 @@ App({
           //   },
           // })
           var hadToken = wx.getStorageSync("token");
+          that.globalData.token = hadToken;
           console.log(hadToken);
           if (!hadToken){
             that.login(cb);
+          }else{
+            cb();
           }
-          that.globalData.token = hadToken;
 
           
         },
@@ -54,7 +56,6 @@ App({
           that.login();
         }
       })
-      console.log("getUserInfo函数")
     }
   },
   globalData:{
@@ -64,8 +65,6 @@ App({
   login:function(cb){
     var that = this;
 
-    var promise = new Promise(function (resolve, reject) {
-      console.log("promise内部")
       //调用登录接口
       wx.login({
         success: function (data) {
@@ -76,7 +75,6 @@ App({
             success: function (res) {
               console.log(JSON.stringify(res));
               that.globalData.userInfo = res.userInfo
-              typeof cb == "function" && cb(that.globalData.userInfo)
 
               var params = {
                 code: data.code,
@@ -92,12 +90,15 @@ App({
                 data: JSON.stringify(params),
                 success: function (res) {
                   console.log(res);
+                  that.globalData.token = res.data.result.token;
                   wx.setStorage({
                     key: 'token',
                     data: res.data.result.token
                   })
-                  that.globalData.token = res.data.result.token;
-                  resolve(res.data.result.token);
+                  // resolve(res.data.result.token);
+
+
+                  typeof cb == "function" && cb(that.globalData.userInfo)
                 }
               })
 
@@ -112,9 +113,7 @@ App({
 
         }
       })
-      return promise
-    })
-    that.globalData.promise = promise;
+    // that.globalData.promise = promise;
     
     
   },

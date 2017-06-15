@@ -60,9 +60,24 @@ Page({
     // this.setData({
     //   recordArr: this.getData()
     // })
+    var prom = new Promise(function(resolve,reject){
+      console.log("进来promise")
+      app.getUserInfo(resolve);
+    })
+    prom.then(function(){
+      console.log("异步操作完成")
       that.getData()
-    setTimeout(function(){
-    },1000)
+    })
+    
+    // var promise = new Promise(function (resolve, reject) {
+    //   console.log('Promise~~~');
+    //   resolve();
+    // });
+
+    // promise.then(function () {
+    //   console.log('Resolved.~~');
+    // });
+
 
   },
   getData:function(){
