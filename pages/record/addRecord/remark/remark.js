@@ -9,7 +9,7 @@ Page({
     moodBox: [],
     selectedMood:null,
     properties:{
-      remark: "我是备注页的内容",
+      remark: "",
       mood:""
     },
     canSave:false

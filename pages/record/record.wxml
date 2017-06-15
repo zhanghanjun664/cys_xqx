@@ -4,7 +4,8 @@
     <image src="../../other/img/icon_other_share.png" class="standard_img"></image> 邀请好友加入，与好友一起去测血压！</button>
 
   <!--没有数据时显示-->
-  <!--<view class="text-center" style="padding-top:120rpx;"><image src="../../other/img/icon_status_none.png" style="width:470rpx" mode="aspectFit"></image></view>-->
+  <view class="text-center" style="padding-top:120rpx;" wx:if="{{recordArr.length==0}}"><image src="../../other/img/icon_status_none.png" style="width:470rpx" mode="aspectFit"></image></view>
+
 
   <scroll-view scroll-y class="rc_dataBox" bindscrolltolower="getData">
     <view class="">

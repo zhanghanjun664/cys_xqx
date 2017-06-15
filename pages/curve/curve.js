@@ -34,20 +34,25 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    wx.request({
-      url: common.REST_PREFIX + "/genericapi/public/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=" + that.data.page_size,
+    
+    utils.ajax({
+      url: common.REST_PREFIX + "/genericapi/private/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=" + that.data.page_size,
       success: function (res) {
         console.log(res)
         that.data.page_num++;
-        //处理显示时间
-        res.data.result.content.map(function (item) {
-          item.showX = utils.formatTime("m/d", item.exam_date);
-          item.showTime = utils.formatTime("time", item.exam_date);
-          return item
-        });
-        res.data.result.content.reverse();
-        // 当前显示的数据
-        that.data.activeData = res.data.result.content;
+        if (res.data.result.content.length){
+          console.log("进来了")
+          //处理显示时间
+          res.data.result.content.map(function (item) {
+            item.showX = utils.formatTime("m/d", item.exam_date);
+            item.showTime = utils.formatTime("time", item.exam_date);
+            return item
+          });
+          res.data.result.content.reverse();
+          // 当前显示的数据
+          that.data.activeData = res.data.result.content;
+
+        }
 
 
         console.log(res.data.result.content)
@@ -157,6 +162,9 @@ Page({
   },
   clickPressureCanvas:function(e){
     var that = this;
+    if(!this.data.activeData.length){
+      return
+    }
 
     var xstandard = (appSystem.screenWidth - 110)/6;
     var num = Math.round((e.detail.x - 60) / xstandard );

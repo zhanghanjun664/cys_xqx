@@ -15,6 +15,9 @@
 //   n = n.toString()
 //   return n[1] ? n : '0' + n
 // }
+'use strict';
+var common = getApp();
+
 function formatTime(type,date) {
   if(type == 4){
     var arr = date.split("-");
@@ -133,49 +136,53 @@ function drawCanvas(config) {
   // ctx.setTextAlign("center");
   ctx.setFillStyle("#acacac");
   ctx.setTextAlign("center");
-  for (var i = 0; i < xlength; i+=2) {
-    ctx.fillText(config.box[i].showX, show("x", i * xstandard + paddingLeft), show("y",-20));
-    ctx.moveTo(show("x",paddingLeft+i*xstandard),show("y",0));
-    ctx.lineTo(show("x", paddingLeft + i * xstandard), show("y", 5));
+  if (config.box.length){
+    for (var i = 0; i < xlength; i+=2) {
+      ctx.fillText(config.box[i].showX, show("x", i * xstandard + paddingLeft), show("y",-20));
+      ctx.moveTo(show("x",paddingLeft+i*xstandard),show("y",0));
+      ctx.lineTo(show("x", paddingLeft + i * xstandard), show("y", 5));
+    }
+    ctx.stroke();
   }
-  ctx.stroke();
   for (var i = 1; i < (lengthY - 1); i++) {
     ctx.fillText(40 * i, show("x",-20),show("y",i*40));
   }
 
-  // 画线
-  ctx.beginPath();
-  ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].systolic));
-  for (var i = 1; i < rNum; i++) {
-    ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].systolic));
-  }
-  ctx.setLineWidth(config.lineWidth);
-  ctx.setStrokeStyle(config.color);
-  ctx.stroke();
-  // 描点
-  for (var i = 0; i < rNum; i++) {
-    ctx.beginPath();
-    ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].systolic), config.r, 0, Math.PI * 2);
-    ctx.setFillStyle(config.color);
-    ctx.fill();
-  }
-
-  if (config.chartType == 2){
+  if(config.box.length){
     // 画线
     ctx.beginPath();
-    ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].diastolic));
+    ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].systolic));
     for (var i = 1; i < rNum; i++) {
-      ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].diastolic));
+      ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].systolic));
     }
     ctx.setLineWidth(config.lineWidth);
-    ctx.setStrokeStyle(config.color2);
+    ctx.setStrokeStyle(config.color);
     ctx.stroke();
     // 描点
     for (var i = 0; i < rNum; i++) {
       ctx.beginPath();
-      ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].diastolic), config.r, 0, Math.PI * 2);
-      ctx.setFillStyle(config.color2);
+      ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].systolic), config.r, 0, Math.PI * 2);
+      ctx.setFillStyle(config.color);
       ctx.fill();
+    }
+
+    if (config.chartType == 2) {
+      // 画线
+      ctx.beginPath();
+      ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].diastolic));
+      for (var i = 1; i < rNum; i++) {
+        ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].diastolic));
+      }
+      ctx.setLineWidth(config.lineWidth);
+      ctx.setStrokeStyle(config.color2);
+      ctx.stroke();
+      // 描点
+      for (var i = 0; i < rNum; i++) {
+        ctx.beginPath();
+        ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].diastolic), config.r, 0, Math.PI * 2);
+        ctx.setFillStyle(config.color2);
+        ctx.fill();
+      }
     }
   }
  
@@ -215,10 +222,71 @@ function drawModal(config){
   ctx.draw();
 }
 
+function ajax(config){
+  var token = wx.getStorageSync("token");
+  if(!token){
+    console.log("没有token");
+    console.log(common.globalData.promise);
+    common.globalData.promise.then(function(tokens){
+      token = tokens;
+      var header = {
+        "X-Cys-Client": "WX_MINI_PROGRAM",
+        Authorization: "CYSTOKEN " + token
+      }
+      console.log(config, header);
+
+      wx.request({
+        header: header,
+        url: config.url,
+        method: config.method || "GET",
+        data: JSON.stringify(config.data),
+        success: function (res) {
+          console.log("下面")
+          console.log(res);
+          if (res.data.code == 2000) {
+            config.success(res)
+          }
+          if (res.code == 4007) {
+            console.log("4007过期了")
+            common.login();
+          }
+        }
+      })
+    })
+  }else{
+    var header = {
+      "X-Cys-Client":"WX_MINI_PROGRAM",
+      Authorization:"CYSTOKEN "+token
+    }
+    console.log(config, header);
+
+    wx.request({
+      header: header,
+      url: config.url,
+      method:config.method||"GET",
+      data:JSON.stringify(config.data),
+      success:function(res){
+        console.log(res);
+        if(res.data.code == 2000){
+          config.success(res)
+        }
+        if(res.code == 4007){
+          console.log("4007过期了")
+          common.login();
+        }
+      }
+    })
+
+  }
+
+
+}
+
 module.exports = {
   formatTime: formatTime,
   formatOptions: formatOptions,
   drawCanvas: drawCanvas,
-  drawModal: drawModal
+  drawModal: drawModal,
+  ajax: ajax
 }
 

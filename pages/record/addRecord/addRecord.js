@@ -30,7 +30,7 @@ Page({
       remark:""
     },
     types:null,
-    id:null,
+    id:"",
     noteHeart:true
   },
 
@@ -110,8 +110,8 @@ Page({
     if(options.type == 1){
       this.data.currentData = prevPages.data.activeData;
       this.data.id = prevPages.data.activeData.id;
-      // this.data.properties.mood = prevPages.data.activeData.properties.mood;
-      // this.data.properties.remark = prevPages.data.activeData.properties.remark;
+      this.data.properties.mood = prevPages.data.activeData.properties.mood;
+      this.data.properties.remark = prevPages.data.activeData.properties.remark;
       this.setData({
         date: utils.formatTime("date:YY-MM-DD",prevPages.data.activeData.exam_date),
         time: utils.formatTime("time", prevPages.data.activeData.exam_date),
@@ -176,9 +176,9 @@ Page({
       })
     }else{
       console.log("数据没问题")
-      wx.request({
-        url: common.REST_PREFIX + '/genericapi/public/healthcenter/healthdata/bloodpressure',
-        data: JSON.stringify(data),
+      utils.ajax({
+        url: common.REST_PREFIX + '/genericapi/private/healthcenter/healthdata/bloodpressure',
+        data: data,
         method:"POST",
         success:function(res){
           var pages = getCurrentPages();
@@ -192,6 +192,7 @@ Page({
             // 新增
             console.log(prevPages.data.recordArr);
             var saveIndex = [];
+            console.log(record_stamp);
             prevPages.data.recordArr.map(function(item,index){
               console.log(item)
               if (item.exam_timestamp < record_stamp) {
@@ -199,7 +200,11 @@ Page({
               }
             })
             console.log(saveIndex);
-            prevPages.data.recordArr.splice(saveIndex[0], 0, handle_data);
+            if (saveIndex.length){
+              prevPages.data.recordArr.splice(saveIndex[0], 0, handle_data);
+            }else{
+              prevPages.data.recordArr.push(handle_data)
+            }
             prevPages.setData({
               recordArr: prevPages.data.recordArr
             })

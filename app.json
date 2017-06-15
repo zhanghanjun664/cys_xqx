@@ -1,8 +1,8 @@
 {
   "pages":[
+    "pages/record/record",
     "pages/curve/curve",
     "pages/record/addRecord/addRecord",
-    "pages/record/record",
     "pages/record/addRecord/remark/remark",
     "pages/home/home",
     "pages/home/changeName/changeName"
@@ -17,7 +17,7 @@
     "selectedColor":"#fd9627",
     "list": [
       {
-        "pagePath": "pages/curve/curve",
+        "pagePath": "pages/record/record",
         "text": "记录",
         "iconPath": "other/img/icon_index_a1.png",
         "selectedIconPath":"other/img/icon_index_a2.png"

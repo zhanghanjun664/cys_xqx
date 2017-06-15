@@ -1,8 +1,10 @@
 // pages/record/record.js
-console.log(common);
+'use strict';
 var app = getApp();
+// console.log(app);
 var common = app.globalData;
 var utils = require("../../utils/util.js");
+console.log(JSON.stringify(common));
 Page({
 
   /**
@@ -13,10 +15,6 @@ Page({
       diastolic:100,
       exam_date:"2017-5-24 19:35:00",
       heart_rate:95,
-      properties:{
-        mood: "pingjing",
-        remark: "我是备注"
-      },
       systolic:80
     },
     recordArr:[],
@@ -25,7 +23,7 @@ Page({
     hasNext: true,
     canGet:true,
     activeData:null,
-    activeIndex:null
+    activeIndex:null,
   },
   // shuaxin:function(){
   //   app.getUserInfo();
@@ -36,7 +34,7 @@ Page({
    */
   onLoad: function (options) {
     console.log(options);
-    // var that = this;
+    var that = this;
     // var data = {
     //   page_num: 0,
     //   page_size: 10
@@ -62,7 +60,9 @@ Page({
     // this.setData({
     //   recordArr: this.getData()
     // })
-    this.getData()
+      that.getData()
+    setTimeout(function(){
+    },1000)
 
   },
   getData:function(){
@@ -70,8 +70,8 @@ Page({
     console.log(that.data)
     if (that.data.hasNext && that.data.canGet){
       that.data.canGet = false;
-      wx.request({
-        url: common.REST_PREFIX + "/genericapi/public/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=" + that.data.page_size,
+      utils.ajax({
+        url: common.REST_PREFIX + "/genericapi/private/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=" + that.data.page_size,
         success: function (res) {
           console.log(res)
           that.data.canGet = true;

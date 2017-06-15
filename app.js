@@ -1,58 +1,122 @@
 //app.js
+'use strict';
+console.log("app页面")
 App({
   onLaunch: function () {
+    console.log("app启动")
     // wx.showModal({
     //   title: '第一次',
     //   content: '第一次啊',
     // })
     //调用API从本地缓存中获取数据
-    var logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs);
+    // var logs = wx.getStorageSync('logs') || []
+    // logs.unshift(Date.now())
+    // wx.setStorageSync('logs', logs);
     this.getUserInfo();
   },
   getUserInfo:function(cb){
-    wx.checkSession({
-      success:function(){
-        console.log("登录成功")
-      },
-      fail:function(){
-        console.log("登录态过期")
-      }
-    })
     var that = this
     if(this.globalData.userInfo){
       console.log("有");
       typeof cb == "function" && cb(this.globalData.userInfo)
     }else{
       console.log("无");
+      // wx.getStorage({
+      //   key: 'token',
+      //   success: function(res) {
+      //     console.log(res)
+      //   },
+
+      // })
       
-      //调用登录接口
-      wx.login({
-        success: function (data) {
-          console.log(data);
-          wx.getUserInfo({
-            withCredentials:true,
-            success: function (res) {
-              console.log(JSON.stringify(res));
-              that.globalData.userInfo = res.userInfo
-              typeof cb == "function" && cb(that.globalData.userInfo)
-            },
-            fail:function(res){
-              console.log(res)
-            },
-            complete:function(res){
-              console.log(res);
-            }
-          })
+      wx.checkSession({
+        success:function(){
+          console.log("登录成功")
+
+          // wx.getStorage({
+          //   key: 'token',
+          //   success: function(res) {
+          //     console.log(res);
+          //     that.globalData.token = res.data
+          //   },
+          // })
+          var hadToken = wx.getStorageSync("token");
+          console.log(hadToken);
+          if (!hadToken){
+            that.login(cb);
+          }
+          that.globalData.token = hadToken;
+
           
+        },
+        fail:function(cb){
+          console.log("登录态过期")
+          that.login();
         }
       })
+      console.log("getUserInfo函数")
     }
   },
   globalData:{
     userInfo:null,
     REST_PREFIX: "https://wxtest.chengyisheng.com.cn"
+  },
+  login:function(cb){
+    var that = this;
+
+    var promise = new Promise(function (resolve, reject) {
+      console.log("promise内部")
+      //调用登录接口
+      wx.login({
+        success: function (data) {
+          console.log(data);
+
+          wx.getUserInfo({
+            withCredentials: true,
+            success: function (res) {
+              console.log(JSON.stringify(res));
+              that.globalData.userInfo = res.userInfo
+              typeof cb == "function" && cb(that.globalData.userInfo)
+
+              var params = {
+                code: data.code,
+                encryptedData: res.encryptedData,
+                iv: res.iv,
+                rawData: res.rawData,
+                signature: res.signature
+              }
+              console.log(params);
+              wx.request({
+                url: that.globalData.REST_PREFIX + '/mpapi/public/mini_program/account/login',
+                method: "POST",
+                data: JSON.stringify(params),
+                success: function (res) {
+                  console.log(res);
+                  wx.setStorage({
+                    key: 'token',
+                    data: res.data.result.token
+                  })
+                  that.globalData.token = res.data.result.token;
+                  resolve(res.data.result.token);
+                }
+              })
+
+            },
+            fail: function (res) {
+              console.log(res)
+            },
+            complete: function (res) {
+              console.log(res);
+            }
+          })
+
+        }
+      })
+      return promise
+    })
+    that.globalData.promise = promise;
+    
+    
   },
   authorize:function(cb){
     var that = this;
@@ -92,3 +156,4 @@ App({
     }
   }
 })
+  

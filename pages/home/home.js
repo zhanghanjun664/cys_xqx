@@ -32,6 +32,7 @@ Page({
   onLoad: function (options) {
     var that = this;
     app.getUserInfo(function (data) {
+      console.log(data);
       var sInfo = {
         name: (that.data.info.name ? that.data.info.name : data.nickName),
         gender: (that.data.info.gender ? that.data.info.gender : data.gender),
