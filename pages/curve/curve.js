@@ -16,7 +16,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    canvasW: (appSystem.screenWidth-30),
+    canvasW: appSystem.screenWidth,
     canvasH: 250,
     showPressureLeft:0,
     showPressureTop:0,
@@ -72,7 +72,7 @@ Page({
           dangerColor2: "#4e8cfd",
           dangerFont2: "舒张压-警戒线",
           dangerValue2: 90,
-          canvasW: that.data.canvasW,
+          canvasW: (that.data.canvasW -30),
           canvasH: that.data.canvasH
         })
 
@@ -88,7 +88,7 @@ Page({
           dangerColor: "#ff8201",
           dangerFont: "心率-警戒线",
           dangerValue: 95,
-          canvasW: that.data.canvasW,
+          canvasW: (that.data.canvasW-30),
           canvasH: that.data.canvasH
         })
 

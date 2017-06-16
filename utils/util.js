@@ -101,6 +101,10 @@ function drawCanvas(config) {
   ctx.setFontSize(14);
   ctx.setTextAlign("right");
   ctx.fillText(config.dangerFont, show("x", config.canvasW - padding), show("y", config.dangerValue+5));
+  // 清除右边再写警戒值
+  ctx.clearRect(config.canvasW, 0, 30, config.canvasH);
+  ctx.setTextAlign("left");
+  ctx.fillText(config.dangerValue, show("x", config.canvasW-padding+5), show("y", config.dangerValue -4));
   ctx.fill();
   if(config.chartType == 2){
 
@@ -111,7 +115,12 @@ function drawCanvas(config) {
     ctx.stroke();
     ctx.setFillStyle(config.dangerColor2);
     ctx.setFontSize(14);
+    ctx.setTextAlign("right");
     ctx.fillText(config.dangerFont2, show("x", config.canvasW - padding), show("y", config.dangerValue2+5));
+    // 清除右边再写警戒值
+    ctx.clearRect(config.canvasW, show("y", config.dangerValue2+20 ), 30, config.canvasH);
+    ctx.setTextAlign("left");
+    ctx.fillText(config.dangerValue2, show("x", config.canvasW - padding + 5), show("y", config.dangerValue2 - 4));
     ctx.fill();
   }
 
@@ -137,7 +146,7 @@ function drawCanvas(config) {
   ctx.setFillStyle("#acacac");
   ctx.setTextAlign("center");
   if (config.box.length){
-    for (var i = 0; i < xlength; i+=2) {
+    for (var i = 0; i < xlength; i++) {
       ctx.fillText(config.box[i].showX, show("x", i * xstandard + paddingLeft), show("y",-20));
       ctx.moveTo(show("x",paddingLeft+i*xstandard),show("y",0));
       ctx.lineTo(show("x", paddingLeft + i * xstandard), show("y", 5));
@@ -185,6 +194,7 @@ function drawCanvas(config) {
       }
     }
   }
+
  
 
   ctx.draw();
@@ -295,7 +305,7 @@ function ajax(config){
         if (res.data.code == 2000) {
           config.success(res)
         }
-        if (res.code == 4007) {
+        if (res.data.code == 4007) {
           console.log("4007过期了")
           common.login();
         }

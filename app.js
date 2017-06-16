@@ -61,7 +61,8 @@ App({
   },
   globalData:{
     userInfo:null,
-    REST_PREFIX: "https://wxtest.chengyisheng.com.cn"
+    REST_PREFIX: "https://wxtest.chengyisheng.com.cn",
+    that:this
   },
   login:function(cb){
     var that = this;
