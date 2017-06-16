@@ -62,6 +62,7 @@ Page({
     // })
     var prom = new Promise(function(resolve,reject){
       console.log("进来promise")
+      // 判断当前用户是否第一次进入
       app.getUserInfo(resolve);
     })
     prom.then(function(){

@@ -1,7 +1,5 @@
 //app.js
-'use strict';
-console.log("app页面");
-var a =0;
+var utils = require("utils/util.js");
 App({
   onLaunch: function () {
     // wx.showModal({
@@ -11,12 +9,15 @@ App({
     //调用API从本地缓存中获取数据
     // var logs = wx.getStorageSync('logs') || []
     // logs.unshift(Date.now())
-    // wx.setStorageSync('logs', logs);
+    wx.setStorageSync('REST_PREFIX', "https://wxtest.chengyisheng.com.cn" );
     // this.getUserInfo();
+    this.setUserInfo();
   },
   getUserInfo:function(cb){
+    console.log(arguments)
     var that = this
-    if(this.globalData.userInfo){
+    var tokens = wx.getStorageSync("token");
+    if (this.globalData.userInfo || tokens){
       console.log("有");
       typeof cb == "function" && cb(this.globalData.userInfo)
     }else{
@@ -41,14 +42,14 @@ App({
           //   },
           // })
           var hadToken = wx.getStorageSync("token");
-          that.globalData.token = hadToken;
           console.log(hadToken);
-          if (!hadToken){
-            that.login(cb);
-          }else{
-            cb();
-          }
-
+          // if (!hadToken){
+          //   that.login(cb);
+          //   // utils.wx_login(cb);
+          // }else{
+          //   cb();
+          // }
+          that.login(cb);
           
         },
         fail:function(cb){
@@ -84,10 +85,10 @@ App({
                 signature: res.signature
               }
               console.log(params);
-              wx.request({
+              utils.ajax({
                 url: that.globalData.REST_PREFIX + '/mpapi/public/mini_program/account/login',
                 method: "POST",
-                data: JSON.stringify(params),
+                data: params,
                 success: function (res) {
                   console.log(res);
                   that.globalData.token = res.data.result.token;
@@ -116,6 +117,18 @@ App({
     // that.globalData.promise = promise;
     
     
+  },
+  setUserInfo:function(){
+    var that = this;
+    wx.login({
+      success:function(){
+        wx.getUserInfo({
+          success:function(res){
+            that.globalData.userInfo = res.userInfo
+          }
+        })
+      }
+    })
   },
   authorize:function(cb){
     var that = this;

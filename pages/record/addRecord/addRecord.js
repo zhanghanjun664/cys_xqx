@@ -103,6 +103,7 @@ Page({
   onLoad: function (options) {
     // type  1:点击对应数据进来    2：点击添加进来，显示空页面
     console.log(options);
+    console.log(common);
     var pages = getCurrentPages();
     var prevPages = pages[pages.length - 2];
     var now = new Date();

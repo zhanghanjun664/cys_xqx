@@ -223,7 +223,7 @@ function drawModal(config){
 }
 
 function ajax(config){
-  var token = common.globalData.token;
+  var token = wx.getStorageSync("token");
   // var token = wx.getStorageSync("token");
   // if(!token){
   //   console.log("没有token");
@@ -305,11 +305,62 @@ function ajax(config){
 
 }
 
+function wx_login(cb){
+  var hostName = wx.getStorageSync("REST_PREFIX");
+  console.log(hostName)
+  //调用登录接口
+  wx.login({
+    success: function (data) {
+      console.log(data);
+
+      wx.getUserInfo({
+        withCredentials: true,
+        success: function (res) {
+          console.log(res);
+        },
+        fail: function (res) {
+          console.log(res)
+        },
+        complete: function (res) {
+          console.log(res);
+          var params = {
+            code: data.code,
+            encryptedData: res.encryptedData,
+            iv: res.iv,
+            rawData: res.rawData,
+            signature: res.signature
+          }
+          ajax({
+            url: hostName + '/mpapi/public/mini_program/account/login',
+            method: "POST",
+            data: params,
+            success: function (res2) {
+              console.log(res2);
+              // wx.setStorage({
+              //   key: 'token',
+              //   data: res2.data.result.token
+              // })
+              wx.setStorageSync("token", res2.data.result.token )
+
+
+              typeof cb == "function" && cb(res.userInfo)
+            }
+          })
+
+        }
+      })
+
+    }
+  })
+}
+
+
 module.exports = {
   formatTime: formatTime,
   formatOptions: formatOptions,
   drawCanvas: drawCanvas,
   drawModal: drawModal,
-  ajax: ajax
+  ajax: ajax,
+  wx_login: wx_login
 }
 

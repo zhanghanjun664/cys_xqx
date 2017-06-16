@@ -7,7 +7,8 @@ function getAge(min, max) {
   return a
 }
 var utils = require("../../utils/util.js");
-var app = getApp();
+var common = getApp();
+
 Page({
 
   /**
@@ -16,11 +17,11 @@ Page({
   data: {
     genderArr: ["男", "女"],
     ageArr: getAge(1, 100),
-    ageIndex: 39,
+    ageIndex: 0,
     genderIndex: 0,
     info: {
-      name: "zzz",
-      age: 0,
+      name: "",
+      age: null,
       gender: "",
       avatar: ""
     }
@@ -31,18 +32,28 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    app.getUserInfo(function (data) {
+    common.getUserInfo(function (data) {
       console.log(data);
-      var sInfo = {
-        name: (that.data.info.name ? that.data.info.name : data.nickName),
-        gender: (that.data.info.gender ? that.data.info.gender : data.gender),
-        avatar: data.avatarUrl
+      if(data){
+        var sInfo = {
+          name: (that.data.info.name ? that.data.info.name : data.nickName),
+          gender: (that.data.info.gender ? that.data.info.gender : data.gender),
+          avatar: data.avatarUrl
+        }
+        that.setData({
+          info: Object.assign(that.data.info, sInfo),
+          genderIndex: String((that.data.genderIndex ? that.data.genderIndex : data.gender - 1))
+        })
       }
-      that.setData({
-        info: Object.assign(that.data.info, sInfo),
-        genderIndex: (that.data.genderIndex ? that.data.genderIndex : data.gender-1)
-      })
     })
+
+    utils.ajax({
+      url: common.globalData.REST_PREFIX +"/mpapi/private/mini_program/account/info",
+      success:function(res){
+        console.log(res);
+      }
+    })
+
   },
 
   /**
@@ -99,14 +110,25 @@ Page({
     })
   },
   changeAge: function (e) {
+
+
     this.setData({
       ageIndex: e.detail.value
     })
   },
   changeGender: function (e) {
-    this.setData({
-      genderIndex: e.detail.value
+    var that = this;
+    utils.ajax({
+      url: common.globalData.REST_PREFIX + "/mpapi/private/mini_program/account/info",
+      method:"POST",
+      data: { gender: Number(that.data.genderIndex)+1 },
+      success:function(res){
+        that.setData({
+          genderIndex: e.detail.value
+        })
+      }
     })
+
   },
   changeName: function () {
     // var data = JSON.stringify(this.data.info);
@@ -121,7 +143,7 @@ Page({
   },
   goAuthorize: function () {
     var that = this;
-    app.authorize(function (data) {
+    common.authorize(function (data) {
       var sInfo = {
         name: that.data.info.name ? that.data.info.name : data.nickName,
         gender: that.data.info.gender ? that.data.info.gender : data.gender,

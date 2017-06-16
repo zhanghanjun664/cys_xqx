@@ -2,6 +2,7 @@
 .recordBox{
   height: 100%;
   background-color: #f4f4f7;
+  overflow: hidden;
   /*position: relative;*/
   /*padding-bottom: 172rpx;*/
 }

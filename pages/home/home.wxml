@@ -8,7 +8,7 @@
   <view class="hm_infoBox">
     <view class="hm_infoCont" bindtap="changeName">
       <view class="hm_infoCont_name">姓名</view>
-      <view class="hm_infoCont_dsc">{{info.name}}</view>
+      <view class="hm_infoCont_dsc">{{info.name?info.name:"暂无"}}</view>
       <view class="hm_infoCont_icon">
         <image src="../../other/img/icon_other_more.png" class="pull-right icon_gt" mode="aspectFit"></image>
       </view>
@@ -16,7 +16,7 @@
 
      <view class="hm_infoCont">
       <view class="hm_infoCont_name">性别</view>
-      <picker class="hm_infoCont_dsc" range="{{genderArr}}" bindchange="changeGender" >{{genderArr[genderIndex]}}</picker>
+      <picker class="hm_infoCont_dsc" range="{{genderArr}}" bindchange="changeGender" >{{genderIndex?genderArr[genderIndex]:"未知"}}</picker>
       <view class="hm_infoCont_icon">
         <image src="../../other/img/icon_other_more.png" class="pull-right icon_gt" mode="aspectFit"></image>
       </view>
@@ -24,7 +24,7 @@
 
      <view class="hm_infoCont">
       <view class="hm_infoCont_name">年龄</view>
-      <picker class="hm_infoCont_dsc" range="{{ageArr}}" bindchange="changeAge" value="39" > {{ageArr[ageIndex]}}</picker>
+      <picker class="hm_infoCont_dsc" range="{{ageArr}}" bindchange="changeAge" value="39" > {{ageIndex?ageArr[ageIndex]:"未知"}}</picker>
       <view class="hm_infoCont_icon">
         <image src="../../other/img/icon_other_more.png" class="pull-right icon_gt" mode="aspectFit"></image>
       </view>
