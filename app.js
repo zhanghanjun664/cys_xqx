@@ -2,16 +2,9 @@
 var utils = require("utils/util.js");
 App({
   onLaunch: function () {
-    // wx.showModal({
-    //   title: '第一次',
-    //   content: '第一次啊',
-    // })
-    //调用API从本地缓存中获取数据
-    // var logs = wx.getStorageSync('logs') || []
-    // logs.unshift(Date.now())
     wx.setStorageSync('REST_PREFIX', "https://wxtest.chengyisheng.com.cn" );
     // this.getUserInfo();
-    this.setUserInfo();
+    // this.setUserInfo();
   },
   getUserInfo:function(cb){
     console.log(arguments)
@@ -34,13 +27,7 @@ App({
         success:function(){
           console.log("登录成功")
 
-          // wx.getStorage({
-          //   key: 'token',
-          //   success: function(res) {
-          //     console.log(res);
-          //     that.globalData.token = res.data
-          //   },
-          // })
+        
           var hadToken = wx.getStorageSync("token");
           console.log(hadToken);
           // if (!hadToken){
@@ -49,14 +36,27 @@ App({
           // }else{
           //   cb();
           // }
-          that.login(cb);
+
+          // that.login(cb);
+          utils.wx_login(cb);
           
         },
         fail:function(cb){
           console.log("登录态过期")
-          that.login();
+          utils.wx_login(cb)
         }
       })
+    }
+  },
+  isLogin:function(cb){
+    var that = this
+    var tokens = wx.getStorageSync("token");
+    if(tokens){
+      console.log("已经登录")
+      cb()
+    }else{
+      console.log("还没登录")
+      utils.wx_login(cb);
     }
   },
   globalData:{
@@ -64,72 +64,25 @@ App({
     REST_PREFIX: "https://wxtest.chengyisheng.com.cn",
     that:this
   },
-  login:function(cb){
+  setUserInfo:function(cb){
     var that = this;
-
-      //调用登录接口
+    if (that.globalData.userInfo){
+      console.log("有资料了")
+      cb(that.globalData.userInfo);
+    }else{
+      console.log("没资料")
       wx.login({
-        success: function (data) {
-          console.log(data);
-
+        success:function(){
           wx.getUserInfo({
-            withCredentials: true,
-            success: function (res) {
-              console.log(JSON.stringify(res));
-              that.globalData.userInfo = res.userInfo
-
-              var params = {
-                code: data.code,
-                encryptedData: res.encryptedData,
-                iv: res.iv,
-                rawData: res.rawData,
-                signature: res.signature
-              }
-              console.log(params);
-              utils.ajax({
-                url: that.globalData.REST_PREFIX + '/mpapi/public/mini_program/account/login',
-                method: "POST",
-                data: params,
-                success: function (res) {
-                  console.log(res);
-                  that.globalData.token = res.data.result.token;
-                  wx.setStorage({
-                    key: 'token',
-                    data: res.data.result.token
-                  })
-                  // resolve(res.data.result.token);
-
-
-                  typeof cb == "function" && cb(that.globalData.userInfo)
-                }
-              })
-
-            },
-            fail: function (res) {
-              console.log(res)
-            },
-            complete: function (res) {
-              console.log(res);
+            success:function(res){
+              that.globalData.userInfo = res.userInfo;
+              typeof cb == "function" && cb(res.userInfo);
             }
           })
-
         }
       })
-    // that.globalData.promise = promise;
-    
-    
-  },
-  setUserInfo:function(){
-    var that = this;
-    wx.login({
-      success:function(){
-        wx.getUserInfo({
-          success:function(res){
-            that.globalData.userInfo = res.userInfo
-          }
-        })
-      }
-    })
+
+    }
   },
   authorize:function(cb){
     var that = this;
@@ -145,8 +98,11 @@ App({
                   console.log(data)
 
                   if (data.authSetting["scope.userInfo"]) {
-                    that.getUserInfo(function (userInfo) {
-                      cb(userInfo);
+                    // that.getUserInfo(function (userInfo) {
+                    //   cb(userInfo);
+                    // })
+                    that.setUserInfo(function(info){
+                      cb(info)
                     })
                   }
 

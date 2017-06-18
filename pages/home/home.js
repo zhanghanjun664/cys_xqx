@@ -21,7 +21,7 @@ Page({
     genderIndex: 0,
     info: {
       name: "",
-      age: null,
+      age: "",
       gender: "",
       avatar: ""
     }
@@ -32,25 +32,28 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    common.getUserInfo(function (data) {
-      console.log(data);
-      if(data){
-        var sInfo = {
-          name: (that.data.info.name ? that.data.info.name : data.nickName),
-          gender: (that.data.info.gender ? that.data.info.gender : data.gender),
-          avatar: data.avatarUrl
-        }
-        that.setData({
-          info: Object.assign(that.data.info, sInfo),
-          genderIndex: String((that.data.genderIndex ? that.data.genderIndex : data.gender - 1))
-        })
-      }
-    })
+    
 
     utils.ajax({
       url: common.globalData.REST_PREFIX +"/mpapi/private/mini_program/account/info",
       success:function(res){
         console.log(res);
+
+        common.setUserInfo(function (data) {
+          console.log(data);
+          if (data) {
+            var sInfo = {
+              name: (res.data.result.nickName ? res.data.result.nickName : data.nickName),
+              gender: (res.data.result.gender ? res.data.result.gender : data.gender),
+              avatar: data.avatarUrl
+            }
+            that.setData({
+              info: Object.assign(that.data.info, sInfo),
+              genderIndex: String((that.data.genderIndex ? that.data.genderIndex : data.gender - 1))
+            })
+          }
+        })
+
       }
     })
 
@@ -110,11 +113,18 @@ Page({
     })
   },
   changeAge: function (e) {
-
-
-    this.setData({
-      ageIndex: e.detail.value
+    var that = this;
+    utils.ajax({
+      url: common.globalData.REST_PREFIX + "/mpapi/private/mini_program/account/info",
+      method: "POST",
+      data: { age: e.detail.value },
+      success: function (res) {
+        that.setData({
+          ageIndex: e.detail.value
+        })
+      }
     })
+    
   },
   changeGender: function (e) {
     var that = this;
@@ -144,16 +154,28 @@ Page({
   goAuthorize: function () {
     var that = this;
     common.authorize(function (data) {
-      var sInfo = {
-        name: that.data.info.name ? that.data.info.name : data.nickName,
-        gender: that.data.info.gender ? that.data.info.gender : data.gender,
-        avatar: data.avatarUrl
+
+      var params = {
+        avatarUrl: data.avatarUrl,
+        nickName: that.data.info.name ? that.data.info.name : data.nickName,
+        gender: that.data.info.gender ? that.data.info.gender : data.gender
       }
-      console.log(data);
-      that.setData({
-        info: Object.assign(that.data.info,sInfo),
-        genderIndex: (that.data.genderIndex ? that.data.genderIndex : data.gender-1)
+
+      utils.ajax({
+        url: common.globalData.REST_PREFIX + "/mpapi/private/mini_program/account/info",
+        method: "POST",
+        data: params,
+        success: function (res) {
+          console.log(res);
+
+          that.setData({
+            info: Object.assign(that.data.info, { name: params.nickName, gender: params.gender, avatar: params.avatarUrl}),
+            genderIndex: String(params.gender-1)
+          })
+
+        }
       })
+
     })
   },
 })

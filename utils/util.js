@@ -223,7 +223,7 @@ function drawModal(config){
 
   var ctx = wx.createCanvasContext(config.id);
   ctx.setFillStyle("white");
-  ctx.fillRect(0,0,100,30);
+  ctx.fillRect(1,1,100,30);
   ctx.fill();
   ctx.setFillStyle("black");
   ctx.setFontSize(14);
@@ -234,83 +234,31 @@ function drawModal(config){
 
 function ajax(config){
   var token = wx.getStorageSync("token");
-  // var token = wx.getStorageSync("token");
-  // if(!token){
-  //   console.log("没有token");
-  //   console.log(common.globalData.promise);
-  //   common.globalData.promise.then(function(tokens){
-  //     token = tokens;
-  //     var header = {
-  //       "X-Cys-Client": "WX_MINI_PROGRAM",
-  //       Authorization: "CYSTOKEN " + token
-  //     }
-  //     console.log(config, header);
+  var header = {
+    "X-Cys-Client": "WX_MINI_PROGRAM",
+    Authorization: "CYSTOKEN " + token
+  }
+  console.log(config, header);
 
-  //     wx.request({
-  //       header: header,
-  //       url: config.url,
-  //       method: config.method || "GET",
-  //       data: JSON.stringify(config.data),
-  //       success: function (res) {
-  //         console.log("下面")
-  //         console.log(res);
-  //         if (res.data.code == 2000) {
-  //           config.success(res)
-  //         }
-  //         if (res.code == 4007) {
-  //           console.log("4007过期了")
-  //           common.login();
-  //         }
-  //       }
-  //     })
-  //   })
-  // }else{
-  //   var header = {
-  //     "X-Cys-Client":"WX_MINI_PROGRAM",
-  //     Authorization:"CYSTOKEN "+token
-  //   }
-  //   console.log(config, header);
-
-  //   wx.request({
-  //     header: header,
-  //     url: config.url,
-  //     method:config.method||"GET",
-  //     data:JSON.stringify(config.data),
-  //     success:function(res){
-  //       console.log(res);
-  //       if(res.data.code == 2000){
-  //         config.success(res)
-  //       }
-  //       if(res.code == 4007){
-  //         console.log("4007过期了")
-  //         common.login();
-  //       }
-  //     }
-  //   })
-
-  // }
-    var header = {
-      "X-Cys-Client": "WX_MINI_PROGRAM",
-      Authorization: "CYSTOKEN " + token
-    }
-    console.log(config, header);
-
-    wx.request({
-      header: header,
-      url: config.url,
-      method: config.method || "GET",
-      data: JSON.stringify(config.data),
-      success: function (res) {
-        console.log(res);
-        if (res.data.code == 2000) {
-          config.success(res)
-        }
-        if (res.data.code == 4007) {
-          console.log("4007过期了")
-          common.login();
-        }
+  wx.request({
+    header: header,
+    url: config.url,
+    method: config.method || "GET",
+    data: JSON.stringify(config.data),
+    success: function (res) {
+      console.log(res);
+      if (res.data.code == 2000) {
+        config.success(res)
       }
-    })
+      if (res.data.code == 4007) {
+        console.log("4007过期了")
+        // common.login();
+        wx_login(function(){
+          ajax(config);
+        });
+      }
+    }
+  })
 
 
 }
@@ -318,7 +266,7 @@ function ajax(config){
 function wx_login(cb){
   var hostName = wx.getStorageSync("REST_PREFIX");
   console.log(hostName)
-  //调用登录接口
+  //调用登录接口  拿到token
   wx.login({
     success: function (data) {
       console.log(data);

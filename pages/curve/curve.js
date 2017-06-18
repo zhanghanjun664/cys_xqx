@@ -1,7 +1,7 @@
 // pages/curve/curve.js
 
 var utils = require("../../utils/util.js");
-var common = getApp().globalData;
+var common = getApp();
 var appSystem;
 wx.getSystemInfo({
   success: function (data) {
@@ -35,65 +35,75 @@ Page({
   onLoad: function (options) {
     var that = this;
     
-    utils.ajax({
-      url: common.REST_PREFIX + "/genericapi/private/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=" + that.data.page_size,
-      success: function (res) {
-        console.log(res)
-        that.data.page_num++;
-        if (res.data.result.content.length){
-          console.log("进来了")
-          //处理显示时间
-          res.data.result.content.map(function (item) {
-            item.showX = utils.formatTime("m/d", item.exam_date);
-            item.showTime = utils.formatTime("time", item.exam_date);
-            return item
-          });
-          res.data.result.content.reverse();
-          // 当前显示的数据
-          that.data.activeData = res.data.result.content;
+    var prom = new Promise(function (resolve, reject) {
+      // 判断当前用户是否有token(已经登录会直接执行回调，若没登录会信登录再执行回调)
+      common.isLogin(resolve);
+    })
+    prom.then(function () {
+      console.log("异步操作完成")
+      utils.ajax({
+        url: common.globalData.REST_PREFIX + "/genericapi/private/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=" + that.data.page_size,
+        success: function (res) {
+          console.log(res)
+          that.data.page_num++;
+          if (res.data.result.content.length) {
+            console.log("进来了")
+            //处理显示时间
+            res.data.result.content.map(function (item) {
+              item.showX = utils.formatTime("m/d", item.exam_date);
+              item.showTime = utils.formatTime("time", item.exam_date);
+              return item
+            });
+            res.data.result.content.reverse();
+            // 当前显示的数据
+            that.data.activeData = res.data.result.content;
+
+          }
+
+
+          console.log(res.data.result.content)
+          utils.drawCanvas({
+            id: "pressureCanvas",
+            box: res.data.result.content,
+            lineWidth: 2,
+            color: "#ff8201",
+            r: 4,
+            color2: "#4e8cfd",
+            chartType: 2,
+            dangerLineColor: "#ffd9b2",
+            dangerColor: "#ff8201",
+            dangerFont: "收缩压-警戒线",
+            dangerValue: 140,
+            dangerLineColor2: "#cadcfe",
+            dangerColor2: "#4e8cfd",
+            dangerFont2: "舒张压-警戒线",
+            dangerValue2: 90,
+            canvasW: (that.data.canvasW - 30),
+            canvasH: that.data.canvasH
+          })
+
+          utils.drawCanvas({
+            id: "heartCanvas",
+            box: res.data.result.content,
+            lineWidth: 2,
+            color: "#ff8201",
+            r: 4,
+            color2: "#4e8cfd",
+            chartType: 1,
+            dangerLineColor: "#ffd9b2",
+            dangerColor: "#ff8201",
+            dangerFont: "心率-警戒线",
+            dangerValue: 95,
+            canvasW: (that.data.canvasW - 30),
+            canvasH: that.data.canvasH
+          })
 
         }
-
-
-        console.log(res.data.result.content)
-        utils.drawCanvas({
-          id: "pressureCanvas",
-          box: res.data.result.content,
-          lineWidth: 2,
-          color: "#ff8201",
-          r: 4,
-          color2: "#4e8cfd",
-          chartType: 2,
-          dangerLineColor: "#ffd9b2",
-          dangerColor: "#ff8201",
-          dangerFont: "收缩压-警戒线",
-          dangerValue: 140,
-          dangerLineColor2: "#cadcfe",
-          dangerColor2: "#4e8cfd",
-          dangerFont2: "舒张压-警戒线",
-          dangerValue2: 90,
-          canvasW: (that.data.canvasW -30),
-          canvasH: that.data.canvasH
-        })
-
-        utils.drawCanvas({
-          id: "heartCanvas",
-          box: res.data.result.content,
-          lineWidth: 2,
-          color: "#ff8201",
-          r: 4,
-          color2: "#4e8cfd",
-          chartType: 1,
-          dangerLineColor: "#ffd9b2",
-          dangerColor: "#ff8201",
-          dangerFont: "心率-警戒线",
-          dangerValue: 95,
-          canvasW: (that.data.canvasW-30),
-          canvasH: that.data.canvasH
-        })
-
-      }
+      })
     })
+
+
+    
 
 
     

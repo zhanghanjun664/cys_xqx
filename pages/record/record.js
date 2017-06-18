@@ -61,9 +61,8 @@ Page({
     //   recordArr: this.getData()
     // })
     var prom = new Promise(function(resolve,reject){
-      console.log("进来promise")
-      // 判断当前用户是否第一次进入
-      app.getUserInfo(resolve);
+      // 判断当前用户是否有token(已经登录会直接执行回调，若没登录会信登录再执行回调)
+      app.isLogin(resolve);
     })
     prom.then(function(){
       console.log("异步操作完成")
