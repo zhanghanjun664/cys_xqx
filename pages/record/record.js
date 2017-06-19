@@ -4,7 +4,6 @@ var app = getApp();
 // console.log(app);
 var common = app.globalData;
 var utils = require("../../utils/util.js");
-console.log(JSON.stringify(common));
 Page({
 
   /**

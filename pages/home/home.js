@@ -8,7 +8,6 @@ function getAge(min, max) {
 }
 var utils = require("../../utils/util.js");
 var common = getApp();
-
 Page({
 
   /**
@@ -41,6 +40,7 @@ Page({
 
         common.setUserInfo(function (data) {
           console.log(data);
+          console.log(res.data.result.gender ? res.data.result.gender : data.gender - 1);
           if (data) {
             var sInfo = {
               name: (res.data.result.nickName ? res.data.result.nickName : data.nickName),
@@ -49,7 +49,8 @@ Page({
             }
             that.setData({
               info: Object.assign(that.data.info, sInfo),
-              genderIndex: String((that.data.genderIndex ? that.data.genderIndex : data.gender - 1))
+              genderIndex: String((res.data.result.gender ? res.data.result.gender-1 : data.gender - 1)),
+              ageIndex: String(res.data.result.age) ? String(res.data.result.age) : ""
             })
           }
         })

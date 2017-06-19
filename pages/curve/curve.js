@@ -1,7 +1,7 @@
 // pages/curve/curve.js
 
 var utils = require("../../utils/util.js");
-var common = getApp();
+var common = getApp().globalData;
 var appSystem;
 wx.getSystemInfo({
   success: function (data) {
@@ -25,8 +25,17 @@ Page({
     showHeartTop: 0,
     showHeartBox: false,
     page_num:0,
-    page_size:7,
-    activeData:[],//当前曲线数据
+    allData:[],//所有数据
+    pressureActiveNum:0,//当前血压图数据
+    heartActiveNum:0,//当前心率图数据
+    tH:20,//title高度
+    bH: 270,//盒子高度 canvasH+tH
+    pressureTouchBox:[],//记录手势
+    heartTouchBox:[],
+    canLoad:true,
+    maxNum:0,
+    pressureTouch: true,//离开屏幕才能拉第二次
+    heartTouch: true
   },
 
   /**
@@ -35,87 +44,86 @@ Page({
   onLoad: function (options) {
     var that = this;
     
-    var prom = new Promise(function (resolve, reject) {
-      // 判断当前用户是否有token(已经登录会直接执行回调，若没登录会信登录再执行回调)
-      common.isLogin(resolve);
+    this.getData(0,function(data){
+      // 血压图
+      utils.drawCanvas({
+        id: "pressureCanvas",
+        box: data,
+        lineWidth: 2,
+        color: "#ff8201",
+        r: 4,
+        color2: "#4e8cfd",
+        chartType: 2,
+        dangerLineColor: "#ffd9b2",
+        dangerColor: "#ff8201",
+        dangerFont: "收缩压-警戒线",
+        dangerValue: 140,
+        dangerLineColor2: "#cadcfe",
+        dangerColor2: "#4e8cfd",
+        dangerFont2: "舒张压-警戒线",
+        dangerValue2: 90,
+        canvasW: (that.data.canvasW - 30),
+        canvasH: that.data.canvasH
+      })
+
+      // 心率图
+      utils.drawCanvas({
+        id: "heartCanvas",
+        box: data,
+        lineWidth: 2,
+        color: "#ff8201",
+        r: 4,
+        color2: "#4e8cfd",
+        chartType: 1,
+        dangerLineColor: "#ffd9b2",
+        dangerColor: "#ff8201",
+        dangerFont: "心率-警戒线",
+        dangerValue: 95,
+        canvasW: (that.data.canvasW - 30),
+        canvasH: that.data.canvasH
+      })
+
+
     })
-    prom.then(function () {
-      console.log("异步操作完成")
+  },
+  getData:function(num,cb){
+    var that = this;
+    if (this.data.page_num <= num){
+      this.data.canLoad = false;
+      // 拉数据
       utils.ajax({
-        url: common.globalData.REST_PREFIX + "/genericapi/private/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=" + that.data.page_size,
+        url: common.REST_PREFIX + "/genericapi/private/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=7",
         success: function (res) {
+          that.data.canLoad = true;
+          that.data.maxNum = res.data.result.total_pages;
           console.log(res)
           that.data.page_num++;
           if (res.data.result.content.length) {
-            console.log("进来了")
+            console.log("新拉的还有数据")
             //处理显示时间
             res.data.result.content.map(function (item) {
               item.showX = utils.formatTime("m/d", item.exam_date);
               item.showTime = utils.formatTime("time", item.exam_date);
               return item
             });
+            console.log("过得来")
             res.data.result.content.reverse();
             // 当前显示的数据
-            that.data.activeData = res.data.result.content;
-
+            that.data.allData.push(res.data.result.content);
+            typeof cb == "function" && cb(res.data.result.content)
+          }else{
+            console.log("已经没数据可以拉了")
+            typeof cb == "function" && cb();
           }
-
-
-          console.log(res.data.result.content)
-          utils.drawCanvas({
-            id: "pressureCanvas",
-            box: res.data.result.content,
-            lineWidth: 2,
-            color: "#ff8201",
-            r: 4,
-            color2: "#4e8cfd",
-            chartType: 2,
-            dangerLineColor: "#ffd9b2",
-            dangerColor: "#ff8201",
-            dangerFont: "收缩压-警戒线",
-            dangerValue: 140,
-            dangerLineColor2: "#cadcfe",
-            dangerColor2: "#4e8cfd",
-            dangerFont2: "舒张压-警戒线",
-            dangerValue2: 90,
-            canvasW: (that.data.canvasW - 30),
-            canvasH: that.data.canvasH
-          })
-
-          utils.drawCanvas({
-            id: "heartCanvas",
-            box: res.data.result.content,
-            lineWidth: 2,
-            color: "#ff8201",
-            r: 4,
-            color2: "#4e8cfd",
-            chartType: 1,
-            dangerLineColor: "#ffd9b2",
-            dangerColor: "#ff8201",
-            dangerFont: "心率-警戒线",
-            dangerValue: 95,
-            canvasW: (that.data.canvasW - 30),
-            canvasH: that.data.canvasH
-          })
 
         }
       })
-    })
-
+    }else{
+      // 有数据直接返回
+      typeof cb == "function" && cb(that.data.allData[num]);
+    }
 
     
-
-
-    
-    utils.drawModal({
-      id: "showPressureBox",
-      value: "08:00 128/106"
-    })
-    utils.drawModal({
-      id: "showHeartBox",
-      value: "09:00 128/106"
-    })
-
 
   },
 
@@ -130,14 +138,66 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-  
+    var update =  wx.getStorageSync("dataHadChanged");
+    var that = this;
+    if (update == "true"){
+      this.data.heartActiveNum = 0;
+      this.data.pressureActiveNum = 0;
+      this.data.allData = [];
+      this.data.page_num = 0;
+      this.getData(0, function (data) {
+        // 血压图
+        utils.drawCanvas({
+          id: "pressureCanvas",
+          box: data,
+          lineWidth: 2,
+          color: "#ff8201",
+          r: 4,
+          color2: "#4e8cfd",
+          chartType: 2,
+          dangerLineColor: "#ffd9b2",
+          dangerColor: "#ff8201",
+          dangerFont: "收缩压-警戒线",
+          dangerValue: 140,
+          dangerLineColor2: "#cadcfe",
+          dangerColor2: "#4e8cfd",
+          dangerFont2: "舒张压-警戒线",
+          dangerValue2: 90,
+          canvasW: (that.data.canvasW - 30),
+          canvasH: that.data.canvasH
+        })
+
+        // 心率图
+        utils.drawCanvas({
+          id: "heartCanvas",
+          box: data,
+          lineWidth: 2,
+          color: "#ff8201",
+          r: 4,
+          color2: "#4e8cfd",
+          chartType: 1,
+          dangerLineColor: "#ffd9b2",
+          dangerColor: "#ff8201",
+          dangerFont: "心率-警戒线",
+          dangerValue: 95,
+          canvasW: (that.data.canvasW - 30),
+          canvasH: that.data.canvasH
+        })
+
+
+      })
+    }
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-  
+    wx.setStorageSync("dataHadChanged", "false");
+    this.setData({
+      showPressureBox:false,
+      showHeartBox:false
+    })
   },
 
   /**
@@ -167,41 +227,233 @@ Page({
   onShareAppMessage: function () {
   
   },
-  getData:function(){
-    console.log("拉数据");
-  },
   clickPressureCanvas:function(e){
     var that = this;
-    if(!this.data.activeData.length){
+    var pressureActiveNum = this.data.pressureActiveNum;
+    if (!this.data.allData[pressureActiveNum].length) {
+      console.log("血压没数据")
       return
     }
-
-    var xstandard = (appSystem.screenWidth - 110)/6;
-    var num = Math.round((e.detail.x - 60) / xstandard );
+    console.log("血压有数据")
+    var xstandard = (appSystem.screenWidth - 110) / 6;
+    var num = Math.round((e.changedTouches[0].x - 60) / xstandard);//点中对应的下标
     // 60-50=10 第一个点离左边距离，自身宽度一半，距离父级距离
-    var left = num * xstandard +10;
-    var top = e.detail.y;
+    // systolic高压 
+    var left = num * xstandard + 10;
+    var c = this.data.bH - 40 - e.changedTouches[0].y, high = that.data.allData[pressureActiveNum][num].systolic, low = that.data.allData[pressureActiveNum][num].diastolic;
+    console.log(c, high, low)
+    var who = ((c - low) < (high - c)) ? low : high;
+    var top = 225 - who;
+
+
     console.log(e);
+    console.log(num)
 
     this.setData({
-      showPressureBox:true,
-      showPressureLeft:left,
-      showPressureTop:top
+      showPressureBox: true,
+      showPressureLeft: left,
+      showPressureTop: top
     })
-    var showValue = that.data.activeData[num].showTime + " " + that.data.activeData[num].systolic + "/" + that.data.activeData[num].diastolic
+    var showValue = that.data.allData[pressureActiveNum][num].showTime + " " + that.data.allData[pressureActiveNum][num].systolic + "/" + that.data.allData[pressureActiveNum][num].diastolic
     utils.drawModal({
       id: "showPressureBox",
-      value: showValue
+      top_icon: "showPressure_top_icon",
+      bottom_icon: "showPressure_bottom_icon",
+      value: showValue,
+      width: 100,
+      height: 26
     })
   },
   clickHeartCanvas:function(e){
-    var targetX = e.detail.x;
+    var that = this;
+    if (!this.data.allData[that.data.heartActiveNum].length) {
+      return
+    }
+
     var xstandard = (appSystem.screenWidth - 110) / 6;
-    console.log(e)
-    var num = Math.round((targetX - 60) / xstandard);
-    console.log(num);
-    // 20-50+45=15 第一个点离Y轴距离，自身宽度一半，距离父级距离
-    var left = (num - 1) * 40 - 30 + appSystem.screenWidth * 0.12;
-    var top = e.detail.y - 25;
+    var num = Math.round((e.changedTouches[0].x - 60) / xstandard);//点中对应的下标
+    // 60-20=10 第一个点离左边距离，自身宽度一半，距离父级距离
+    // systolic高压 
+    var left = num * xstandard + 40;
+    console.log(that.data.allData[that.data.heartActiveNum][num].heart_rate);
+    var top = 225 - that.data.allData[that.data.heartActiveNum][num].heart_rate;
+
+
+    console.log(e);
+    console.log(num)
+
+    this.setData({
+      showHeartBox: true,
+      showHeartLeft: left,
+      showHeartTop: top
+    })
+    utils.drawModal({
+      id: "showHeartBox",
+      top_icon: "showHeart_top_icon",
+      value: that.data.allData[that.data.heartActiveNum][num].heart_rate,
+      width:40,
+      height:26
+    })
+  },
+  pressureTouchend:function(e){
+    console.log(e);
+    this.data.pressureTouchBox = [];
+    this.data.pressureTouch = true;
+
+  },
+  pressureTouchmove:function(e){
+    var that = this;
+    this.data.pressureTouchBox.push(e.touches[0].x);
+    if (this.data.pressureTouch){
+      if (this.data.pressureTouchBox[this.data.pressureTouchBox.length - 1] - this.data.pressureTouchBox[0] > 50){
+        this.data.pressureTouch = false;
+        console.log("下一页");
+        console.log(this.data.canLoad);
+        if (this.data.canLoad && (that.data.maxNum-1 > that.data.pressureActiveNum) ){
+          that.data.pressureActiveNum++;
+          this.getData(that.data.pressureActiveNum, function (data) {
+            if (data){
+              utils.drawCanvas({
+                id: "pressureCanvas",
+                box: data,
+                lineWidth: 2,
+                color: "#ff8201",
+                r: 4,
+                color2: "#4e8cfd",
+                chartType: 2,
+                dangerLineColor: "#ffd9b2",
+                dangerColor: "#ff8201",
+                dangerFont: "收缩压-警戒线",
+                dangerValue: 140,
+                dangerLineColor2: "#cadcfe",
+                dangerColor2: "#4e8cfd",
+                dangerFont2: "舒张压-警戒线",
+                dangerValue2: 90,
+                canvasW: (that.data.canvasW - 30),
+                canvasH: that.data.canvasH
+              })
+              that.setData({ showPressureBox: false })
+            }
+          })
+
+        }
+        
+      } else if (this.data.pressureTouchBox[this.data.pressureTouchBox.length - 1] - this.data.pressureTouchBox[0] < -50){
+        this.data.pressureTouch = false;
+        console.log("上一页");
+        if (that.data.pressureActiveNum == 0) {
+          console.log("无更多数据")
+          return
+        }
+        console.log(this.data.canLoad)
+        if (this.data.canLoad) {
+
+          console.log("数据可拉")
+          that.data.pressureActiveNum--;
+          this.getData(that.data.pressureActiveNum, function (data) {
+            utils.drawCanvas({
+              id: "pressureCanvas",
+              box: data,
+              lineWidth: 2,
+              color: "#ff8201",
+              r: 4,
+              color2: "#4e8cfd",
+              chartType: 2,
+              dangerLineColor: "#ffd9b2",
+              dangerColor: "#ff8201",
+              dangerFont: "收缩压-警戒线",
+              dangerValue: 140,
+              dangerLineColor2: "#cadcfe",
+              dangerColor2: "#4e8cfd",
+              dangerFont2: "舒张压-警戒线",
+              dangerValue2: 90,
+              canvasW: (that.data.canvasW - 30),
+              canvasH: that.data.canvasH
+            })
+            that.setData({ showPressureBox: false })
+          })
+        }
+      }
+
+    }
+
+  },
+  heartTouchend:function(e){
+    this.data.heartTouchBox = [];
+    this.data.heartTouch = true;
+  },
+  heartTouchmove:function(e){
+    var that = this;
+    this.data.heartTouchBox.push(e.touches[0].x);
+    if (this.data.heartTouch) {
+      if (this.data.heartTouchBox[this.data.heartTouchBox.length - 1] - this.data.heartTouchBox[0] > 50) {
+        this.data.heartTouch = false;
+        console.log("下一页");
+        console.log(this.data.canLoad);
+        if (this.data.canLoad && (that.data.maxNum - 1 > that.data.heartActiveNum)) {
+          that.data.heartActiveNum++;
+          this.getData(that.data.heartActiveNum, function (data) {
+            if (data) {
+              utils.drawCanvas({
+                id: "heartCanvas",
+                box: data,
+                lineWidth: 2,
+                color: "#ff8201",
+                r: 4,
+                color2: "#4e8cfd",
+                chartType: 1,
+                dangerLineColor: "#ffd9b2",
+                dangerColor: "#ff8201",
+                dangerFont: "心率-警戒线",
+                dangerValue: 95,
+                canvasW: (that.data.canvasW - 30),
+                canvasH: that.data.canvasH
+              })
+              that.setData({ showHeartBox: false })
+            }
+          })
+
+        }
+        
+      } else if (this.data.heartTouchBox[this.data.heartTouchBox.length - 1] - this.data.heartTouchBox[0] < -50) {
+
+        this.data.heartTouch = false;
+        console.log("上一页");
+        if (that.data.heartActiveNum == 0) {
+          console.log("无更多数据")
+          return
+        }
+        console.log(this.data.canLoad)
+        if (this.data.canLoad) {
+
+          console.log("数据可拉")
+          that.data.heartActiveNum--;
+          this.getData(that.data.heartActiveNum, function (data) {
+            utils.drawCanvas({
+              id: "heartCanvas",
+              box: data,
+              lineWidth: 2,
+              color: "#ff8201",
+              r: 4,
+              color2: "#4e8cfd",
+              chartType: 1,
+              dangerLineColor: "#ffd9b2",
+              dangerColor: "#ff8201",
+              dangerFont: "心率-警戒线",
+              dangerValue: 95,
+              canvasW: (that.data.canvasW - 30),
+              canvasH: that.data.canvasH
+            })
+            that.setData({ showHeartBox: false })
+          })
+        }
+
+
+      }
+
+    }
+
   }
+
+
 })

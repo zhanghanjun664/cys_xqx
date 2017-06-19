@@ -1,20 +1,4 @@
-// function formatTime(date) {
-//   var year = date.getFullYear()
-//   var month = date.getMonth() + 1
-//   var day = date.getDate()
 
-//   var hour = date.getHours()
-//   var minute = date.getMinutes()
-//   var second = date.getSeconds()
-
-
-//   return [year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
-// }
-
-// function formatNumber(n) {
-//   n = n.toString()
-//   return n[1] ? n : '0' + n
-// }
 'use strict';
 var common = getApp();
 
@@ -83,12 +67,12 @@ function drawCanvas(config) {
   var padding = config.padding || 40;
   var paddingLeft = 20;
   var xstandard = (config.canvasW - paddingLeft * 2 - padding) / (rNum-1);
-  console.log(xstandard)
+  var maxLenth = config.box.length;
+
   // 排序(根据x从小到大)
   // config.box.sort(function (a, b) {
   //   return a.x - b.x
   // })
-  console.log(config)
 
   // 警戒线
   ctx.beginPath();
@@ -140,53 +124,72 @@ function drawCanvas(config) {
   // 刻度(文字)
   ctx.beginPath();
   ctx.setFontSize(14);
-  var xlength = Math.ceil(config.canvasW / xstandard) - 1;
-  var lengthY = Math.ceil(config.canvasH / 40) - 1;
   // ctx.setTextAlign("center");
   ctx.setFillStyle("#acacac");
   ctx.setTextAlign("center");
   if (config.box.length){
-    for (var i = 0; i < xlength; i++) {
+    for (var i = 0; i < maxLenth; i++) {
       ctx.fillText(config.box[i].showX, show("x", i * xstandard + paddingLeft), show("y",-20));
       ctx.moveTo(show("x",paddingLeft+i*xstandard),show("y",0));
       ctx.lineTo(show("x", paddingLeft + i * xstandard), show("y", 5));
     }
     ctx.stroke();
   }
-  for (var i = 1; i < (lengthY - 1); i++) {
+  for (var i = 1; i < 5; i++) {
     ctx.fillText(40 * i, show("x",-20),show("y",i*40));
   }
 
   if(config.box.length){
-    // 画线
-    ctx.beginPath();
-    ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].systolic));
-    for (var i = 1; i < rNum; i++) {
-      ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].systolic));
-    }
-    ctx.setLineWidth(config.lineWidth);
-    ctx.setStrokeStyle(config.color);
-    ctx.stroke();
-    // 描点
-    for (var i = 0; i < rNum; i++) {
+    console.log(rNum, maxLenth)
+    if(config.chartType == 1){
+      // 一条线  
+      // 画线
       ctx.beginPath();
-      ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].systolic), config.r, 0, Math.PI * 2);
-      ctx.setFillStyle(config.color);
-      ctx.fill();
-    }
+      ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].heart_rate));
+      for (var i = 1; i < maxLenth; i++) {
+        ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].heart_rate));
+      }
+      ctx.setLineWidth(config.lineWidth);
+      ctx.setStrokeStyle(config.color);
+      ctx.stroke();
+      // 描点
+      for (var i = 0; i < maxLenth; i++) {
+        ctx.beginPath();
+        ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].heart_rate), config.r, 0, Math.PI * 2);
+        ctx.setFillStyle(config.color);
+        ctx.fill();
+      }
+    }else if (config.chartType == 2) {
+      //两条线
+      // 画线
+      ctx.beginPath();
+      ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].systolic));
+      for (var i = 1; i < maxLenth; i++) {
+        ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].systolic));
+      }
+      ctx.setLineWidth(config.lineWidth);
+      ctx.setStrokeStyle(config.color);
+      ctx.stroke();
+      // 描点
+      for (var i = 0; i < maxLenth; i++) {
+        ctx.beginPath();
+        ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].systolic), config.r, 0, Math.PI * 2);
+        ctx.setFillStyle(config.color);
+        ctx.fill();
+      }
 
-    if (config.chartType == 2) {
+
       // 画线
       ctx.beginPath();
       ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].diastolic));
-      for (var i = 1; i < rNum; i++) {
+      for (var i = 1; i < maxLenth; i++) {
         ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].diastolic));
       }
       ctx.setLineWidth(config.lineWidth);
       ctx.setStrokeStyle(config.color2);
       ctx.stroke();
       // 描点
-      for (var i = 0; i < rNum; i++) {
+      for (var i = 0; i < maxLenth; i++) {
         ctx.beginPath();
         ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].diastolic), config.r, 0, Math.PI * 2);
         ctx.setFillStyle(config.color2);
@@ -208,37 +211,59 @@ function drawCanvas(config) {
   }
 
 }
+
+// 点击显示框
 function drawModal(config){
-  var ctx2 = wx.createCanvasContext(config.icon_id);
+  // 上箭头  w:10  h:6
+  var ctx3 = wx.createCanvasContext(config.top_icon);
+  ctx3.beginPath();
+  ctx3.setFillStyle("white");
+  ctx3.fillRect(0, 0, 10, 6);
+  ctx3.fill();
+  ctx3.setStrokeStyle("#dcdcdc");
+  ctx3.moveTo(0, 6);
+  ctx3.lineTo(5, 0);
+  ctx3.lineTo(10, 6);
+  ctx3.stroke();
+  ctx3.draw();
+  // 下箭头
+  var ctx2 = wx.createCanvasContext(config.bottom_icon);
   ctx2.beginPath();
   ctx2.setFillStyle("white");
-  ctx2.fillRect(0,0,30,30);
+  ctx2.fillRect(0,0,10,6);
   ctx2.fill();
   ctx2.setStrokeStyle("#dcdcdc");
   ctx2.moveTo(0,0);
-  ctx2.lineTo(10,12);
-  ctx2.lineTo(20,0);
+  ctx2.lineTo(5,6);
+  ctx2.lineTo(10,0);
   ctx2.stroke();
   ctx2.draw();
+  console.log(config);
 
   var ctx = wx.createCanvasContext(config.id);
   ctx.setFillStyle("white");
-  ctx.fillRect(1,1,100,30);
+  ctx.fillRect(1, 1, config.width - 1, config.height-1);
   ctx.fill();
   ctx.setFillStyle("black");
   ctx.setFontSize(14);
-  ctx.fillText(config.value,5,20);
+  ctx.setTextAlign("center");
+  ctx.fillText(config.value, config.width/2,20);
   ctx.fill();
   ctx.draw();
 }
-
 function ajax(config){
-  var token = wx.getStorageSync("token");
-  var header = {
-    "X-Cys-Client": "WX_MINI_PROGRAM",
-    Authorization: "CYSTOKEN " + token
+  var header;
+  
+  var privateUrl =  config.url.match("private");
+  var loginUrl = config.url.match("login");
+  // private接口或者login接口需要设置请求头
+  if ((privateUrl && privateUrl.length) || (loginUrl&&loginUrl.length)){
+    var token = wx.getStorageSync("token");
+    header = {
+      "X-Cys-Client": "WX_MINI_PROGRAM",
+      Authorization: "CYSTOKEN " + token
+    }
   }
-  console.log(config, header);
 
   wx.request({
     header: header,
@@ -252,13 +277,13 @@ function ajax(config){
       }
       if (res.data.code == 4007) {
         console.log("4007过期了")
-        // common.login();
         wx_login(function(){
           ajax(config);
         });
       }
     }
   })
+
 
 
 }
@@ -319,6 +344,6 @@ module.exports = {
   drawCanvas: drawCanvas,
   drawModal: drawModal,
   ajax: ajax,
-  wx_login: wx_login
+  wx_login: wx_login,
 }
 

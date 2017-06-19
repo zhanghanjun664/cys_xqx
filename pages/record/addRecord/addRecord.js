@@ -182,6 +182,7 @@ Page({
         data: data,
         method:"POST",
         success:function(res){
+          wx.setStorageSync("dataHadChanged", "true");
           var pages = getCurrentPages();
           var prevPages = pages[pages.length - 2];
           console.log(res);

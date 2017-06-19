@@ -1,6 +1,6 @@
 <!--pages/curve/curve.wxml-->
 <view class="">
-  <view class="cv_pressureBox clearfix">
+  <view class="cv_pressureBox clearfix" style="height:{{tH}}px">
     <view style="font-size:36rpx">血压曲线图(mmHg)</view>
     <view class="cv_cv_pressureRight">
       <view class="cv_highBox">
@@ -26,17 +26,18 @@
   </view>-->
 
   <view class="cv_canvasBox clearfix">
-    <canvas canvas-id="pressureCanvas" class="canvas2" style="width:{{canvasW}}px;height:{{canvasH}}px" bindtap="clickPressureCanvas" />
+    <canvas canvas-id="pressureCanvas" class="canvas2" style="width:{{canvasW}}px;height:{{canvasH}}px" bindtouchstart="clickPressureCanvas" bindtouchend="pressureTouchend" bindtouchmove="pressureTouchmove" disable-scroll="true" />
     <view class="showMsgBox" style="top:{{showPressureTop}}px;left:{{showPressureLeft}}px;" wx:if="{{showPressureBox}}" >
       <canvas canvas-id="showPressureBox" class="showMsg" />
-      <canvas canvas-id="showMsg_icon" class="showMsg_icon" />
+      <canvas canvas-id="showPressure_top_icon" class="showMsg_top_icon" />
+      <!--<canvas canvas-id="showPressure_bottom_icon" class="showMsg_bottom_icon" />-->
     </view>
   </view>
 
 </view>
 <!--心率-->
 <view class="">
-  <view class="cv_pressureBox clearfix">
+  <view class="cv_pressureBox clearfix" style="height:{{tH}}px">
     <view style="font-size:36rpx">心率曲线图(bmp)</view>
     <view class="cv_cv_pressureRight">
 
@@ -48,10 +49,10 @@
   </view>
 
   <view class="cv_canvasBox clearfix">
-    <canvas canvas-id="heartCanvas" class="canvas2" style="width:{{canvasW}}px;height:{{canvasH}}px" bindtap="clickHeartCanvas" />
-    <view class="showMsgBox" style="top:{{showMsgTop}}px;left:{{showMsgLeft}}px;" wx:if="{{showHeartBox}}" >
-      <canvas canvas-id="showHeartMsg" class="showMsg" />
-      <canvas canvas-id="showMsg_icon" class="showMsg_icon" />
+    <canvas canvas-id="heartCanvas" class="canvas2" style="width:{{canvasW}}px;height:{{canvasH}}px" bindtouchstart="clickHeartCanvas" bindtouchmove="heartTouchmove" bindtouchend="heartTouchend" disable-scroll />
+    <view class="showMsgBox" style="top:{{showHeartTop}}px;left:{{showHeartLeft}}px;" wx:if="{{showHeartBox}}" >
+      <canvas canvas-id="showHeartBox" class="showMsg2" />
+      <canvas canvas-id="showHeart_top_icon" class="showMsg_top_icon" style="left:15px" />
     </view>
   </view>
 </view>
