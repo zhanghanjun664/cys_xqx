@@ -1,10 +1,11 @@
 //app.js
 var utils = require("utils/util.js");
+
 App({
   onLaunch: function () {
-    wx.setStorageSync('REST_PREFIX', "https://wxtest.chengyisheng.com.cn" );
     // this.getUserInfo();
     // this.setUserInfo();
+     
   },
   getUserInfo:function(cb){
     console.log(arguments)
@@ -26,18 +27,6 @@ App({
       wx.checkSession({
         success:function(){
           console.log("登录成功")
-
-        
-          var hadToken = wx.getStorageSync("token");
-          console.log(hadToken);
-          // if (!hadToken){
-          //   that.login(cb);
-          //   // utils.wx_login(cb);
-          // }else{
-          //   cb();
-          // }
-
-          // that.login(cb);
           utils.wx_login(cb);
           
         },
@@ -61,8 +50,6 @@ App({
   },
   globalData:{
     userInfo:null,
-    REST_PREFIX: "https://wxtest.chengyisheng.com.cn",
-    that:this
   },
   setUserInfo:function(cb){
     var that = this;

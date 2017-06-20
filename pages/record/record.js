@@ -1,9 +1,8 @@
 // pages/record/record.js
 'use strict';
 var app = getApp();
-// console.log(app);
-var common = app.globalData;
 var utils = require("../../utils/util.js");
+
 Page({
 
   /**
@@ -34,31 +33,6 @@ Page({
   onLoad: function (options) {
     console.log(options);
     var that = this;
-    // var data = {
-    //   page_num: 0,
-    //   page_size: 10
-    // }
-
-    // wx.request({
-    //   url: common.REST_PREFIX + "/genericapi/public/healthcenter/healthdata/bloodpressure/page?page_num=" + data.page_num + "&page_size=" + data.page_size,
-    //   success: function (res) {
-    //     console.log(res.data.result.content)
-    //     res.data.result.content.map(function(item){
-    //       item.showDate = utils.formatTime("date", item.exam_date);
-    //       item.showTime = utils.formatTime("time", item.exam_date);
-    //       return item
-    //     })
-    //     console.log(res.data.result.content)
-    //     that.setData({
-    //       recordArr:res.data.result.content
-    //     })
-    //   }
-    // })
-
-    
-    // this.setData({
-    //   recordArr: this.getData()
-    // })
     var prom = new Promise(function(resolve,reject){
       // 判断当前用户是否有token(已经登录会直接执行回调，若没登录会信登录再执行回调)
       app.isLogin(resolve);
@@ -67,15 +41,6 @@ Page({
       console.log("异步操作完成")
       that.getData()
     })
-    
-    // var promise = new Promise(function (resolve, reject) {
-    //   console.log('Promise~~~');
-    //   resolve();
-    // });
-
-    // promise.then(function () {
-    //   console.log('Resolved.~~');
-    // });
 
 
   },
@@ -85,7 +50,7 @@ Page({
     if (that.data.hasNext && that.data.canGet){
       that.data.canGet = false;
       utils.ajax({
-        url: common.REST_PREFIX + "/genericapi/private/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=" + that.data.page_size,
+        url: "/genericapi/private/healthcenter/healthdata/bloodpressure/page?page_num=" + that.data.page_num + "&page_size=" + that.data.page_size,
         success: function (res) {
           console.log(res)
           that.data.canGet = true;
@@ -154,7 +119,7 @@ Page({
    */
   onShareAppMessage: function () {
     return {
-      title:"转发标题",
+      title:"疾风剑豪",
       success:function(res){
         console.log(res)
       },
@@ -181,27 +146,3 @@ Page({
     })
   }
 })
-
-function getData(){
-  var data = {
-    page_num: 0,
-    page_size: 10,
-    hasNext: true
-  }
-  console.log(data)
-  if (data.hasNext) {
-    wx.request({
-      url: common.REST_PREFIX + "/genericapi/public/healthcenter/healthdata/bloodpressure/page?page_num=" + data.page_num + "&page_size=" + data.page_size,
-      success: function (res) {
-        data.page_num++;
-        data.hasNext = res.data.result.has_next;
-        res.data.result.content.map(function (item) {
-          item.showDate = utils.formatTime("date", item.exam_date);
-          item.showTime = utils.formatTime("time", item.exam_date);
-          return item
-        })
-        return res.data.result.content
-      }
-    })
-  }
-}

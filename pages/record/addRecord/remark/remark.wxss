@@ -1,40 +1,47 @@
 /* pages/record/addRecord/remark/remark.wxss */
-.rm_text{
-  border-top: 1px solid #ececec;
+
+.rm_text {
+  /*border-top: 1px solid #ececec;*/
   border-bottom: 1px solid #ececec;
   width: 100%;
-  margin-bottom:20px;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  font-size: 15px;
 }
 
-.rm_moodBox{
+.rm_moodBox {
   margin-top: 14px;
 }
-.rm_moodBox view{
+
+.rm_moodBox view {
   float: left;
   width: 28%;
   margin: 0 2% 10px;
-  background-color:#f8f8f8;
-  text-align: center; 
+  background-color: #f8f8f8;
+  text-align: center;
   line-height: 40px;
   height: 40px;
   color: #ababab;
   border: 1px solid #ececec;
   font-size: 30rpx;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
 }
-.rm_moodBox view text{
+
+.rm_moodBox view text {
   font-size: 32rpx;
   margin-left: 16rpx;
 }
-.rm_moodBox .active{
+
+.rm_moodBox .active {
   color: #fc9627;
   /*background-color: #fd9627;*/
-  border:1px solid #fc9627;
+  border: 1px solid #fc9627;
 }
-.rm_selectedIcon{
+
+.rm_selectedIcon {
   width: 32rpx;
   height: 32rpx;
   position: absolute;

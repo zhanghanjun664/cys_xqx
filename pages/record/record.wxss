@@ -7,25 +7,13 @@
   /*padding-bottom: 172rpx;*/
 }
 
-.share_btn{
-  background-color:#fba951;
-  border-radius:0;
-  width:100%;
-  position:absolute;
-  top:0;
-  line-height: 2;
-  font-size: 30rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
 .rc_dataBox{
   height: 80%;
   padding-top: 30px;
 }
 .rc_dataContItem{
   width: 100%;
-  /*line-height: 1.8;*/
   background-color: #fff;
   padding:8rpx 16rpx;
   border-bottom: 1px solid #ececec;
@@ -37,9 +25,9 @@
 }
 .rc_dataTitle{
   padding:6rpx 16rpx;
-  color: #a7a7a7;
-  font-size: 32rpx;
-  margin-top: 10px;
+  color: #999999;
+  font-size: 28rpx;
+  margin: 10px 0 4px 0;
 }
 .rc_dataContItem_time{
   color: #a7a7a7;

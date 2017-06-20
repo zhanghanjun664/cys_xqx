@@ -1,4 +1,5 @@
 // pages/home/changeName/changeName.js
+var utils = require("../../../utils/util.js");
 Page({
 
   /**
@@ -12,9 +13,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(options)
+    console.log(options);
+    // var opt = JSON.parse(JSON.stringify(options));
     this.setData({
-      name:options.name
+      name: options.name
     })
   },
 
@@ -75,11 +77,23 @@ Page({
     var pages = getCurrentPages();
     var prevPage = pages[pages.length - 2];
     console.log(prevPage.data.info)
-    prevPage.setData({
-      info: Object.assign(prevPage.data.info,{name:that.data.name})
-    });
-    wx.navigateBack({
-      delta:1
-    })
+    
+    console.log(that.data.name, prevPage.data.info.name)
+    if (that.data.name != prevPage.data.info.name){
+      utils.ajax({
+        url: "/mpapi/private/mini_program/account/info",
+        method:"POST",
+        data: { nickName: that.data.name},
+        success:function(){
+          prevPage.setData({
+            info: Object.assign(prevPage.data.info, { name: that.data.name })
+          });
+          wx.navigateBack({
+            delta: 1
+          })
+        }
+      })
+    }
+    
   }
 })

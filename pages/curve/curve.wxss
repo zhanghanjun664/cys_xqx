@@ -5,6 +5,7 @@
 .cv_pressureBox{
   display: flex;
   justify-content: space-between;
+  color: #333333;
 }
 .cv_cv_pressureRight{
   flex: 1;

@@ -9,7 +9,6 @@ var utils = require("../../../utils/util.js");
 //     app = data;
 //   }
 // });
-
 var common = getApp().globalData;
 
 Page({
@@ -20,7 +19,7 @@ Page({
   data: {
     highValue: 0,
     lowValue:0,
-    heartValue:60,
+    heartValue:0,
     showDate:"",
     date:"",//value值 YYYY-MM-dd
     time:"",//hh:mm
@@ -49,11 +48,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    var now = new Date();
-    // this.setData({
-    //   nowDate: utils.formatTime("date:YY-MM-DD", now),
-    //   nowTime: utils.formatTime("time", now),
-    // })
+    
   },
 
   /**
@@ -103,7 +98,6 @@ Page({
   onLoad: function (options) {
     // type  1:点击对应数据进来    2：点击添加进来，显示空页面
     console.log(options);
-    console.log(common);
     var pages = getCurrentPages();
     var prevPages = pages[pages.length - 2];
     var now = new Date();
@@ -121,7 +115,8 @@ Page({
         heartValue: prevPages.data.activeData.heart_rate,
         showDate: utils.formatTime("date", prevPages.data.activeData.exam_date),
         nowDate: utils.formatTime("date:YY-MM-DD", now),
-        properties: this.data.properties
+        properties: this.data.properties,
+        noteHeart: prevPages.data.activeData.heart_rate ? true :false
       })
       console.log(this.data, prevPages.data.activeData)
     }else{
@@ -129,7 +124,7 @@ Page({
         date: utils.formatTime("date:YY-MM-DD", now),
         time: utils.formatTime("time", now),
         showDate: utils.formatTime("date", now),
-        nowDate: utils.formatTime("date:YY-MM-DD", now)
+        nowDate: utils.formatTime("date:YY-MM-DD", now),
       })
     }
     console.log(this.data);
@@ -178,11 +173,11 @@ Page({
     }else{
       console.log("数据没问题")
       utils.ajax({
-        url: common.REST_PREFIX + '/genericapi/private/healthcenter/healthdata/bloodpressure',
+        url: '/genericapi/private/healthcenter/healthdata/bloodpressure',
         data: data,
         method:"POST",
         success:function(res){
-          wx.setStorageSync("dataHadChanged", "true");
+          common.dataHadChanged = true;
           var pages = getCurrentPages();
           var prevPages = pages[pages.length - 2];
           console.log(res);
@@ -235,21 +230,12 @@ Page({
   highChange:function(e){
     console.log(e)
     this.data.highValue = e.detail.value;
-    // this.setData({
-    //   highValue:e.detail.value
-    // })
   },
   lowChange: function (e) {
     console.log(e)
     this.data.lowValue = e.detail.value;
-    // this.setData({
-    //   lowValue: e.detail.value
-    // })
   },
   heartChange:function(e){
     this.data.heartValue = e.detail.value;
-    // this.setData({
-    //   heartValue: e.detail.value
-    // })
   }
 })

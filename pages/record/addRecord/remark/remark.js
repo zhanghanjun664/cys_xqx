@@ -1,5 +1,5 @@
 // pages/record/addRecord/remark/remark.js
-var common = getApp().globalData;
+var utils = require("../../../../utils/util.js");
 Page({
 
   /**
@@ -20,26 +20,27 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    wx.request({
-      url: common.REST_PREFIX +'/genericapi/public/healthcenter/healthdata/moods',
-      success:function(res){
+    utils.ajax({
+      url: '/genericapi/public/healthcenter/healthdata/moods',
+      success: function (res) {
         console.log(res);
         var moodIndex = null;
-        res.data.result.map(function(item,index){
-          if (item.key == options.mood){
+        res.data.result.map(function (item, index) {
+          if (item.key == options.mood) {
             moodIndex = index
           }
         })
 
         that.setData({
-          moodBox:res.data.result,
-          selectedMood:moodIndex
+          moodBox: res.data.result,
+          selectedMood: moodIndex
         })
       }
     })
+    
+
     this.data.properties.remark = options.remark;
     this.data.properties.mood = options.mood;
-    console.log(this.data.properties)
     this.setData({
       properties: that.data.properties
     })

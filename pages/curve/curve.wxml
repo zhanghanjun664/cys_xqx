@@ -1,7 +1,9 @@
 <!--pages/curve/curve.wxml-->
-<view class="">
+<button open-type="share" class="share_btn">
+    <image src="../../other/img/icon_other_share.png" class="standard_img"></image> 邀请好友加入，与好友一起去测血压！</button>
+<view style="padding-top:35px">
   <view class="cv_pressureBox clearfix" style="height:{{tH}}px">
-    <view style="font-size:36rpx">血压曲线图(mmHg)</view>
+    <view class="font34">血压曲线图(mmHg)</view>
     <view class="cv_cv_pressureRight">
       <view class="cv_highBox">
         <view class="cv_square"></view>
@@ -38,7 +40,7 @@
 <!--心率-->
 <view class="">
   <view class="cv_pressureBox clearfix" style="height:{{tH}}px">
-    <view style="font-size:36rpx">心率曲线图(bmp)</view>
+    <view class="font34">心率曲线图(bmp)</view>
     <view class="cv_cv_pressureRight">
 
       <view class="cv_highBox">

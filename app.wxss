@@ -10,6 +10,9 @@
 } 
 
 /*全局样式*/
+.font34{
+  font-size: 34rpx;
+}
 .font32{
   font-size: 32rpx;
 }
@@ -81,4 +84,17 @@ page{
 }
 .font28{
   font-size: 28rpx;
+}
+
+.share_btn{
+  background-color:#fba951;
+  border-radius:0;
+  width:100%;
+  position:absolute;
+  top:0;
+  line-height: 2;
+  font-size: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

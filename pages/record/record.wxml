@@ -21,15 +21,16 @@
               <view class="">{{item.systolic}}/{{item.diastolic}}</view>
               <view class="rc_dataContItem_hg_unit">mmHg</view>
             </view>
-
+            <!--心率-->
             <view class="rc_dataContItem_heart" style="background-color:{{item.heart_rate_level=='TACHYCARDIA'?'#ffddf9':(item.heart_rate_level=='BRADYCARDIA'?'#eeeeee':'')}}">
               <view class="">{{item.heart_rate?item.heart_rate:"-"}}</view>
               <view class="rc_dataContItem_hg_unit">bmp</view>
             </view>
 
+            <!--提示-->
             <view class="rc_dataContItem_dsc">
               <view wx:if="{{item.blood_pressure_level=='NORMAL_BLOODPRESSURE'&&item.heart_rate_level=='NORMAL'}}">指标正常</view>
-              <view wx:if="{{item.blood_pressure_level!='NORMAL_BLOODPRESSURE'||item.heart_rate_level!='NORMAL'}}">
+              <view wx:if="{{item.blood_pressure_level!='NORMAL_BLOODPRESSURE'||item.heart_rate_level!='NORMAL'}}" style="line-height:1.1">
                 <view wx:if="{{item.blood_pressure_level!='NORMAL_BLOODPRESSURE'}}">{{item.blood_pressure_level_name}}</view>
                 <view wx:if="{{item.heart_rate_level!='NORMAL'}}">{{item.heart_rate_level_name}}</view>
               </view>

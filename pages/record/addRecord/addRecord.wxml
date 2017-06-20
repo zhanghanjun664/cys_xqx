@@ -60,7 +60,7 @@
         <!--<view class="ar_midTitleValue">{{heartValue}}</view>-->
         <view class="ar_midTitleSwitch">
           <text>是否记录</text>
-          <switch type="switch" color="#fd9627" bindchange="handleSwitch" checked style="transform:scale(0.8)" />
+          <switch type="switch" color="#fd9627" bindchange="handleSwitch" checked="{{noteHeart?true:false}}" style="transform:scale(0.8)" />
         </view>
       </view>
       <view style="position:relative;">

@@ -8,6 +8,7 @@ function getAge(min, max) {
 }
 var utils = require("../../utils/util.js");
 var common = getApp();
+var isAuthorized = false;
 Page({
 
   /**
@@ -32,30 +33,53 @@ Page({
   onLoad: function (options) {
     var that = this;
     
-
-    utils.ajax({
-      url: common.globalData.REST_PREFIX +"/mpapi/private/mini_program/account/info",
-      success:function(res){
-        console.log(res);
-
-        common.setUserInfo(function (data) {
-          console.log(data);
-          console.log(res.data.result.gender ? res.data.result.gender : data.gender - 1);
-          if (data) {
+    var prom = new Promise(function (resolve, reject){
+      common.isLogin(resolve)
+    })
+    prom.then(function(){
+      utils.ajax({
+        url: "/mpapi/private/mini_program/account/info",
+        success:function(res){
+          console.log(res);
+          isAuthorized = res.data.result.isAuthorized;
+          if (res.data.result.isAuthorized){
+            // 已授权
             var sInfo = {
-              name: (res.data.result.nickName ? res.data.result.nickName : data.nickName),
-              gender: (res.data.result.gender ? res.data.result.gender : data.gender),
-              avatar: data.avatarUrl
+              name: res.data.result.nickName,
+              gender: res.data.result.gender,
+              avatar: res.data.result.avatarUrl
             }
             that.setData({
               info: Object.assign(that.data.info, sInfo),
-              genderIndex: String((res.data.result.gender ? res.data.result.gender-1 : data.gender - 1)),
+              genderIndex: String((res.data.result.gender ? res.data.result.gender - 1 : data.gender - 1)),
               ageIndex: String(res.data.result.age) ? String(res.data.result.age) : ""
             })
-          }
-        })
 
-      }
+          }else{
+            // 还没授权
+            common.setUserInfo(function (data) {
+              console.log(data);
+              console.log(res.data.result.gender ? res.data.result.gender : data.gender - 1);
+              if (data) {
+                var sInfo = {
+                  name: (res.data.result.nickName ? res.data.result.nickName : data.nickName),
+                  gender: (res.data.result.gender ? res.data.result.gender : data.gender),
+                  avatar: data.avatarUrl
+                }
+                that.setData({
+                  info: Object.assign(that.data.info, sInfo),
+                  genderIndex: String((res.data.result.gender ? res.data.result.gender-1 : data.gender - 1)),
+                  ageIndex: String(res.data.result.age) ? String(res.data.result.age) : ""
+                })
+              }
+            })
+
+          }
+
+
+        }
+      })
+
     })
 
   },
@@ -108,15 +132,10 @@ Page({
   onShareAppMessage: function () {
 
   },
-  go: function () {
-    wx.navigateTo({
-      url: 'changeName/changeName',
-    })
-  },
   changeAge: function (e) {
     var that = this;
     utils.ajax({
-      url: common.globalData.REST_PREFIX + "/mpapi/private/mini_program/account/info",
+      url: "/mpapi/private/mini_program/account/info",
       method: "POST",
       data: { age: e.detail.value },
       success: function (res) {
@@ -130,9 +149,9 @@ Page({
   changeGender: function (e) {
     var that = this;
     utils.ajax({
-      url: common.globalData.REST_PREFIX + "/mpapi/private/mini_program/account/info",
+      url: "/mpapi/private/mini_program/account/info",
       method:"POST",
-      data: { gender: Number(that.data.genderIndex)+1 },
+      data: { gender: Number(e.detail.value)+1, },
       success:function(res){
         that.setData({
           genderIndex: e.detail.value
@@ -147,36 +166,37 @@ Page({
     var that = this;
     wx.navigateTo({
       url: 'changeName/changeName?name=' + that.data.info.name,
-      success: function (res) { },
-      fail: function (res) { },
-      complete: function (res) { },
+      success: function (res) { }
     })
   },
   goAuthorize: function () {
     var that = this;
-    common.authorize(function (data) {
+    if (!isAuthorized){
+      common.authorize(function (data) {
 
-      var params = {
-        avatarUrl: data.avatarUrl,
-        nickName: that.data.info.name ? that.data.info.name : data.nickName,
-        gender: that.data.info.gender ? that.data.info.gender : data.gender
-      }
-
-      utils.ajax({
-        url: common.globalData.REST_PREFIX + "/mpapi/private/mini_program/account/info",
-        method: "POST",
-        data: params,
-        success: function (res) {
-          console.log(res);
-
-          that.setData({
-            info: Object.assign(that.data.info, { name: params.nickName, gender: params.gender, avatar: params.avatarUrl}),
-            genderIndex: String(params.gender-1)
-          })
-
+        var params = {
+          avatarUrl: data.avatarUrl,
+          nickName: that.data.info.name ? that.data.info.name : data.nickName,
+          gender: that.data.info.gender ? that.data.info.gender : data.gender,
+          isAuthorized:true
         }
-      })
 
-    })
+        utils.ajax({
+          url: "/mpapi/private/mini_program/account/info",
+          method: "POST",
+          data: params,
+          success: function (res) {
+            console.log(res);
+
+            that.setData({
+              info: Object.assign(that.data.info, { name: params.nickName, gender: params.gender, avatar: params.avatarUrl}),
+              genderIndex: String(params.gender-1)
+            })
+
+          }
+        })
+
+      })
+    }
   },
 })

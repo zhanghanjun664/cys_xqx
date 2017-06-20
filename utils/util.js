@@ -1,6 +1,6 @@
 
 'use strict';
-var common = getApp();
+var REST_PREFIX = "https://wxtest.chengyisheng.com.cn";
 
 function formatTime(type,date) {
   if(type == 4){
@@ -140,24 +140,29 @@ function drawCanvas(config) {
   }
 
   if(config.box.length){
-    console.log(rNum, maxLenth)
+    console.log(config.box)
     if(config.chartType == 1){
       // 一条线  
       // 画线
       ctx.beginPath();
       ctx.moveTo(show("x", paddingLeft), show("y", config.box[0].heart_rate));
       for (var i = 1; i < maxLenth; i++) {
-        ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].heart_rate));
+        if (config.box[i].heart_rate){
+          ctx.lineTo(show("x", xstandard * i + paddingLeft), show("y", config.box[i].heart_rate));
+        }
       }
       ctx.setLineWidth(config.lineWidth);
       ctx.setStrokeStyle(config.color);
       ctx.stroke();
-      // 描点
+      // 描点 心率有可能为空
       for (var i = 0; i < maxLenth; i++) {
-        ctx.beginPath();
-        ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].heart_rate), config.r, 0, Math.PI * 2);
-        ctx.setFillStyle(config.color);
-        ctx.fill();
+        if (config.box[i].heart_rate){
+          ctx.beginPath();
+          ctx.arc(show("x", xstandard * i + paddingLeft), show("y", config.box[i].heart_rate), config.r, 0, Math.PI * 2);
+          ctx.setFillStyle(config.color);
+          ctx.fill();
+
+        }
       }
     }else if (config.chartType == 2) {
       //两条线
@@ -227,17 +232,17 @@ function drawModal(config){
   ctx3.stroke();
   ctx3.draw();
   // 下箭头
-  var ctx2 = wx.createCanvasContext(config.bottom_icon);
-  ctx2.beginPath();
-  ctx2.setFillStyle("white");
-  ctx2.fillRect(0,0,10,6);
-  ctx2.fill();
-  ctx2.setStrokeStyle("#dcdcdc");
-  ctx2.moveTo(0,0);
-  ctx2.lineTo(5,6);
-  ctx2.lineTo(10,0);
-  ctx2.stroke();
-  ctx2.draw();
+  // var ctx2 = wx.createCanvasContext(config.bottom_icon);
+  // ctx2.beginPath();
+  // ctx2.setFillStyle("white");
+  // ctx2.fillRect(0,0,10,6);
+  // ctx2.fill();
+  // ctx2.setStrokeStyle("#dcdcdc");
+  // ctx2.moveTo(0,0);
+  // ctx2.lineTo(5,6);
+  // ctx2.lineTo(10,0);
+  // ctx2.stroke();
+  // ctx2.draw();
   console.log(config);
 
   var ctx = wx.createCanvasContext(config.id);
@@ -251,6 +256,7 @@ function drawModal(config){
   ctx.fill();
   ctx.draw();
 }
+
 function ajax(config){
   var header;
   
@@ -267,7 +273,7 @@ function ajax(config){
 
   wx.request({
     header: header,
-    url: config.url,
+    url: REST_PREFIX + config.url,
     method: config.method || "GET",
     data: JSON.stringify(config.data),
     success: function (res) {
@@ -289,8 +295,6 @@ function ajax(config){
 }
 
 function wx_login(cb){
-  var hostName = wx.getStorageSync("REST_PREFIX");
-  console.log(hostName)
   //调用登录接口  拿到token
   wx.login({
     success: function (data) {
@@ -300,6 +304,14 @@ function wx_login(cb){
         withCredentials: true,
         success: function (res) {
           console.log(res);
+          ajax({
+            url: "/mpapi/private/mini_program/account/info",
+            method:"POST",
+            data: { isAuthorized:true},
+            success: function (res) {
+              
+            }
+          })
         },
         fail: function (res) {
           console.log(res)
@@ -314,7 +326,7 @@ function wx_login(cb){
             signature: res.signature
           }
           ajax({
-            url: hostName + '/mpapi/public/mini_program/account/login',
+            url: '/mpapi/public/mini_program/account/login',
             method: "POST",
             data: params,
             success: function (res2) {
@@ -329,6 +341,7 @@ function wx_login(cb){
               typeof cb == "function" && cb(res.userInfo)
             }
           })
+          
 
         }
       })
