@@ -32,20 +32,6 @@ function formatTime(type,date) {
   }else if(type == "m/d"){
     return month+"/"+day
   }
-  // switch (type){
-  //   case "date": 
-  //     return year + "年" + month + "月" + day + "日"
-  //   case "time":
-  //     var hh = hour.toString().length == 1 ? "0" + hour : hour;
-  //     var mm = minute.toString().length == 1 ? "0" + minute : minute;
-  //     return hh + ":" + mm
-  //   case "te:YY-MM-DD":
-  //     return year + "-" + month + "-" + day
-  //   case 5:
-  //     return year + "年" + month + "月" + day + "日"
-  //   case 6:
-  //     return year + "年" + month + "月" + day + "日"
-  // }
 
 }
 
@@ -277,7 +263,6 @@ function ajax(config){
     method: config.method || "GET",
     data: JSON.stringify(config.data),
     success: function (res) {
-      console.log(res);
       if (res.data.code == 2000) {
         config.success(res)
       }

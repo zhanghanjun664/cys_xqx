@@ -207,7 +207,34 @@ Page({
             })
           }else{
             // 修改
-            prevPages.data.recordArr.splice(prevPages.data.activeIndex, 1, handle_data);
+            // prevPages.data.recordArr.splice(prevPages.data.activeIndex, 1, handle_data);
+
+            var saveIndex = [];
+            prevPages.data.recordArr.map(function (item, index) {
+              if (item.exam_timestamp < record_stamp) {
+                saveIndex.push(index)
+              }
+            })
+            console.log(saveIndex);
+            if (prevPages.data.activeIndex == saveIndex[0]){
+              prevPages.data.recordArr.splice(saveIndex[0], 1, handle_data)
+            }else{
+              if (saveIndex.length) {
+                prevPages.data.recordArr.splice(prevPages.data.activeIndex, 1);
+                if (saveIndex[0] > prevPages.data.activeIndex){
+                  prevPages.data.recordArr.splice(saveIndex[0]-1, 1, handle_data);
+                }else{
+                  prevPages.data.recordArr.splice(saveIndex[0], 1, handle_data);
+                }
+                
+                
+              } else {
+                // 数组是空，即修改后比当前所有时间都早
+                prevPages.data.recordArr.splice(prevPages.data.activeIndex, 1)
+                prevPages.data.recordArr.splice(saveIndex[0], 1, handle_data);
+              }
+            }
+
             prevPages.setData({
               recordArr: prevPages.data.recordArr
             })
