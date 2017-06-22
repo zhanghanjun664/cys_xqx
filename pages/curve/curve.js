@@ -162,25 +162,25 @@ Page({
       this.data.page_num = 0;
       this.getData(0, function (data) {
         // 血压图
-        utils.drawCanvas({
-          id: "pressureCanvas",
-          box: data,
-          lineWidth: 2,
-          color: "#ff8201",
-          r: 4,
-          color2: "#4e8cfd",
-          chartType: 2,
-          dangerLineColor: "#ffd9b2",
-          dangerColor: "#ff8201",
-          dangerFont: "收缩压-警戒线",
-          dangerValue: 140,
-          dangerLineColor2: "#cadcfe",
-          dangerColor2: "#4e8cfd",
-          dangerFont2: "舒张压-警戒线",
-          dangerValue2: 90,
-          canvasW: (that.data.canvasW - 30),
-          canvasH: that.data.canvasH
-        })
+        // utils.drawCanvas({
+        //   id: "pressureCanvas",
+        //   box: data,
+        //   lineWidth: 2,
+        //   color: "#ff8201",
+        //   r: 4,
+        //   color2: "#4e8cfd",
+        //   chartType: 2,
+        //   dangerLineColor: "#ffd9b2",
+        //   dangerColor: "#ff8201",
+        //   dangerFont: "收缩压-警戒线",
+        //   dangerValue: 140,
+        //   dangerLineColor2: "#cadcfe",
+        //   dangerColor2: "#4e8cfd",
+        //   dangerFont2: "舒张压-警戒线",
+        //   dangerValue2: 90,
+        //   canvasW: (that.data.canvasW - 30),
+        //   canvasH: that.data.canvasH
+        // })
 
         // 心率图
         utils.drawCanvas({
@@ -250,7 +250,6 @@ Page({
       console.log("血压没数据")
       return
     }
-    console.log("血压有数据")
     var xstandard = (appSystem.screenWidth - 110) / 6;
     var num = Math.round((e.changedTouches[0].x - 60) / xstandard);//点中对应的下标
     if (that.data.allData[that.data.pressureActiveNum].length - 1 < num) {
@@ -265,9 +264,6 @@ Page({
     var top = 210 - who;
 
 
-
-    console.log(e);
-    console.log(num)
 
     this.setData({
       showPressureBox: true,
