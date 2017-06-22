@@ -52,7 +52,7 @@ function formatTime(type,date) {
 function formatOptions(obj){
   var a = "";
   for(var i in obj){
-    if (obj[i].toString()){
+    if (obj[i]&&obj[i].toString()){
     a += (i+"="+obj[i]+"&")
 
     }

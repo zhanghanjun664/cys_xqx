@@ -3,15 +3,15 @@
     <image src="../../other/img/icon_other_share.png" class="standard_img"></image> 邀请好友加入，与好友一起去测血压！</button>
 <view style="padding-top:35px">
   <view class="cv_pressureBox clearfix" style="height:{{tH}}px">
-    <view class="font34">血压曲线图(mmHg)</view>
-    <view class="cv_cv_pressureRight">
+    <view class="font34 cv_pressureTitle">血压曲线图(mmHg)</view>
+    <view class="cv_pressureRight">
       <view class="cv_highBox">
         <view class="cv_square"></view>
-        <view class="font26 pull-left">收缩压(高压)</view>
+        <view class="font26 pull-left">收缩压</view>
       </view>
       <view class="cv_lowBox">
         <view class="cv_square"></view>
-        <view class="font26 pull-left">舒张压(低压)</view>
+        <view class="font26 pull-left" style="padding-right:20rpx;">舒张压</view>
       </view>
     </view>
   </view>
@@ -40,8 +40,8 @@
 <!--心率-->
 <view class="">
   <view class="cv_pressureBox clearfix" style="height:{{tH}}px">
-    <view class="font34">心率曲线图(bmp)</view>
-    <view class="cv_cv_pressureRight">
+    <view class="font34 cv_pressureTitle">心率曲线图(bmp)</view>
+    <view class="cv_pressureRight">
 
       <view class="cv_highBox">
         <view class="cv_square"></view>

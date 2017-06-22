@@ -7,16 +7,21 @@
   justify-content: space-between;
   color: #333333;
 }
-.cv_cv_pressureRight{
+.cv_pressureRight{
   flex: 1;
   margin-top: 5px;
   margin-left: 36rpx;
+}
+.cv_pressureTitle{
+  padding-left: 20rpx;
+  flex: 1;
 }
 .cv_square{
   width: 26rpx;
   height: 26rpx;
   float: left;
   margin-right: 6rpx;
+  margin-top: 6rpx;
 }
 .cv_highBox{
   float: left;

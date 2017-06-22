@@ -23,9 +23,6 @@ Page({
     activeData:null,
     activeIndex:null,
   },
-  // shuaxin:function(){
-  //   app.getUserInfo();
-  // },
 
   /**
    * 生命周期函数--监听页面加载

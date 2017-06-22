@@ -100,6 +100,7 @@ Page({
     
   },
   getData:function(num,cb){
+    // num 是你要拿的数据是第几页
     var that = this;
     if (this.data.page_num <= num){
       this.data.canLoad = false;

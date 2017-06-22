@@ -17,9 +17,9 @@ Page({
    * 页面的初始数据
    */
   data: {
-    highValue: 0,
-    lowValue:0,
-    heartValue:0,
+    highValue: 100,
+    lowValue:80,
+    heartValue:80,
     showDate:"",
     date:"",//value值 YYYY-MM-dd
     time:"",//hh:mm
