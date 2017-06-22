@@ -3,12 +3,6 @@ var utils = require("utils/util.js");
 
 App({
   onLaunch: function () {
-    wx.showModal({
-      title: '你好',
-      content: 'onLaunch~~~~~~',
-    })
-    console.log("启动！")
-    console.log("启动！")
     // this.getUserInfo();
     // this.setUserInfo();
      
